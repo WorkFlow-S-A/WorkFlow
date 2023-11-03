@@ -11,12 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.workflow.ui.theme.WorkFlowTheme
-import com.example.workflow.domain.valueObject.TaskTitle
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val task = TaskTitle("@")
         setContent {
             WorkFlowTheme {
                 // A surface container using the 'background' color from the theme
@@ -24,7 +23,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting(task.getTitle())
 
                 }
             }
