@@ -5,23 +5,16 @@ import java.util.regex.Pattern
 
 data class Employee(
     val id: UUID = UUID.randomUUID(),
-    val employeeId: EmployeeID,
-    val name: EmployeeName,
-    val surname: EmployeeSurname,
-    val schedule: EmployeeSchedule,
-    val workHours: EmployeeWorkHours,
-    val workedHours: EmployeeWorkedHours,
-    val email : Email,
+    var employeeId: EmployeeID,
+    var name: EmployeeName,
+    var surname: EmployeeSurname,
+    var schedule: EmployeeSchedule,
+    var workHours: EmployeeWorkHours,
+    var workedHours: EmployeeWorkedHours,
+    var email : Email,
 
 
 ){
-
-    fun getId() : UUID = id
-    fun getEmployeeId() : EmployeeID = employeeId
-    fun getName() : EmployeeName = name
-    fun getSurname() : EmployeeSurname = surname
-    fun getSchedule() : EmployeeSchedule = schedule
-    fun getWorkHours() : EmployeeWorkHours = workHours
 
     override fun toString(): String{
         return "Employee { ID= $id" +
@@ -41,9 +34,6 @@ value class EmployeeID(private val id : String){
             "The ID must have 8 numbers."
         }
     }
-
-    fun getId() : String = id
-
 
     override fun toString(): String {
         return "EmployeeId= $id"
@@ -65,8 +55,6 @@ value class EmployeeName(private val name : String){
             "The name can not have numbers."
         }
     }
-
-    fun getName() :String = name
 
     override fun toString(): String {
         return "EmployeeName= $name"
@@ -90,7 +78,6 @@ value class EmployeeSurname(private val surname : String){
         }
     }
 
-    fun getSurname() = surname
     override fun toString(): String{
         return "EmployeeSurname= $surname"
     }
@@ -104,8 +91,6 @@ value class EmployeeSchedule(private val schedule : Map<String, Int>){
         }
     }
 
-    fun getSchedule() : Map<String,Int> = schedule
-
     override fun toString(): String {
         return "EmployeeSchedule= $schedule"
     }
@@ -118,8 +103,6 @@ value class EmployeeWorkHours(private val workHours: Int){
             "Work hours must be between 0 and 12."
         }
     }
-
-    fun getWorkHours(): Int = workHours
 
     override fun toString(): String {
         return "WorkHours= $workHours"
@@ -136,8 +119,6 @@ value class EmployeeWorkedHours(private val workedHours: Int){
         }
     }
 
-    fun getWorkHours(): Int = workedHours
-
     override fun toString(): String {
         return "WorkHours= $workedHours"
     }
@@ -153,8 +134,6 @@ value class Email(private val email : String){
         }
     }
 
-    fun getEmail() = email
-
     override fun toString(): String {
         return "Email= $email"
     }
@@ -168,7 +147,6 @@ value class Phone(private val phone : String){
         )
     }
 
-    fun getPhone(): String = phone
 
     override fun toString(): String {
         return "Phone= $phone"
