@@ -5,17 +5,11 @@ import java.util.Calendar
 import java.util.UUID
 
 data class Task(val id: UUID = UUID.randomUUID(),
-                val name: TaskName,
-                val description: TaskDescription,
-                val startHour: StartHour,
-                val endHour: EndHour,
-                val done: Done) {
-    fun getId(): UUID = id
-    fun getName(): TaskName = name
-    fun getDescription(): TaskDescription = description
-    fun getStartHour(): StartHour = startHour
-    fun getEndHour(): EndHour = endHour
-    fun getDone(): Done = done
+                var name: TaskName,
+                var description: TaskDescription,
+                var startHour: StartHour,
+                var endHour: EndHour,
+                var done: Done) {
     override fun toString(): String {
         return "Task { ID = $id," +
                 "name = $name," +
@@ -36,7 +30,6 @@ value class TaskName(private val name: String) {
             "The name must have at least two letters and consist only of letters."
         }
     }
-    fun getName(): String = name
     override fun toString(): String {
         return "TaskName = $name"
     }
@@ -47,7 +40,6 @@ value class TaskDescription(private val description: String) {
     init {
         require(description != null) { "The value of description must not be null" }
     }
-    fun getDescription(): String = description
     override fun toString(): String {
         return "TaskDescription = $description"
     }
@@ -61,7 +53,6 @@ value class StartHour(private val startHour: Calendar) {
         require(startHour != null) { "The value of startHour must not be null" }
         require(!startHour.before(Calendar.getInstance())) { "startHour must not be earlier than the current date." }
     }
-    fun getStartHour(): Calendar = startHour
     override fun toString(): String {
         return "Start hour = $startHour"
     }
@@ -73,8 +64,6 @@ value class EndHour(private val endHour: Calendar) {
         require(endHour != null) { "The value of endHour must not be null." }
         require(!endHour.before(Calendar.getInstance())) { "endHour must not be earlier than the current date." }
     }
-
-    fun getEndHour(): Calendar = endHour
     override fun toString(): String {
         return "End hour = $endHour"
     }
@@ -86,7 +75,6 @@ value class Done(private val done: Boolean) {
     init {
         require(done != null) { "The value of done must not be null." }
     }
-    fun getDone(): Boolean = done
     override fun toString(): String {
         return "The task is " + if (done) "done" else "not done"
     }
