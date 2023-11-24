@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.workflow.ui.theme.WorkFlowTheme
+import com.example.workflow.utils.InternetChecker
 
 
 class MainActivity : ComponentActivity() {
@@ -27,6 +28,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        print(InternetChecker.checkConnectivity(this))
 
 
     }
