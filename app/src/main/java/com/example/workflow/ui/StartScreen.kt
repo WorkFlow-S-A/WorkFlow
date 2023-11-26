@@ -1,0 +1,99 @@
+package com.example.workflow.ui
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.workflow.R
+import com.example.workflow.ui.customCompose.FilledButton
+import com.example.workflow.ui.theme.BlueWorkFlow
+import com.example.workflow.ui.theme.GreenWorkFlow
+import com.example.workflow.ui.theme.WorkFlowTheme
+import com.example.workflow.ui.theme.jua
+
+@Composable
+fun StartCompose(navController: NavController){
+
+    WorkFlowTheme {
+
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BlueWorkFlow)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(25.dp)
+                ) {
+
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        modifier = Modifier
+                            .size(125.dp)
+                            .padding(10.dp), contentDescription = null
+                    )
+
+                    Text(
+                        text = "WORKFLOW",
+                        modifier = Modifier.padding(10.dp),
+                        style = TextStyle(
+                            color = Color.White, fontFamily = jua,
+                            fontSize = 50.sp
+                        )
+                    )
+                    FilledButton(onClick = {navController.navigate("logIn")}, text = LocalContext.current.getString(R.string.buttonHome1),Modifier.padding(10.dp))
+                    Text(
+                        text = LocalContext.current.getString(R.string.lorem_ipsum_small),
+                        modifier = Modifier.padding(10.dp),
+                        color = Color.White
+                    )
+                    FilledButton(onClick = {navController.navigate("createCompany")}, text = LocalContext.current.getString(R.string.buttonHome2),Modifier.padding(10.dp))
+                    Text(
+                        text = LocalContext.current.getString(R.string.lorem_ipsum_small),
+                        modifier = Modifier.padding(10.dp),
+                        color = Color.White
+                    )
+                }
+                Text(text = LocalContext.current.getString(R.string.version_app), style = TextStyle(
+                    Color.Gray)
+                )
+            }
+
+        }
+    }
+}
+
+
+
+@Preview
+@Composable
+fun StartComposePreview(){
+    StartCompose(navController = rememberNavController())
+}
