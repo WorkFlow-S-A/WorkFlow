@@ -2,6 +2,7 @@ package com.example.workflow.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,11 +21,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.workflow.MainActivity
 import com.example.workflow.R
 import com.example.workflow.ui.theme.BlueWorkFlow
 import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
 import com.example.workflow.ui.theme.jua
+import com.example.workflow.utils.InternetChecker
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +52,7 @@ class HomeActivity : AppCompatActivity() {
                             color = Color.White, fontFamily = jua,
                             fontSize = 50.sp)
                         )
-                        FilledButton (onClick = {}, text=getString(R.string.buttonHome1))
+                        FilledButton (onClick = {Log.d("HOLA",InternetChecker.checkConnectivity(applicationContext).toString())}, text=getString(R.string.buttonHome1))
                         Text(text = getString(R.string.lorem_ipsum_small), modifier = Modifier.padding(10.dp), color = Color.White)
                         FilledButton (onClick = {}, text=getString(R.string.buttonHome2))
                         Text(text = getString(R.string.lorem_ipsum_small), modifier = Modifier.padding(10.dp), color = Color.White)

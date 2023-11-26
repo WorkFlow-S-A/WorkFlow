@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "230542612381",
+    "project_id": "workflow-51da2",
+    "storage_bucket": "workflow-51da2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230542612381:android:271da05f527bfbe08c4174",
+        "android_client_info": {
+          "package_name": "com.example.workflow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2ajKOI2Vig_0KF6JnBARoXbqWXpAOpVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
