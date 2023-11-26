@@ -1,6 +1,5 @@
 package com.example.workflow.domain.entities
 
-import android.app.ActivityManager.TaskDescription
 import java.util.Calendar
 import java.util.UUID
 
@@ -48,7 +47,6 @@ value class TaskDescription(private val description: String) {
 
 @JvmInline
 value class StartHour(private val startHour: Calendar) {
-
     init {
         require(!startHour.before(Calendar.getInstance())) { "startHour must not be earlier than the current date." }
     }
