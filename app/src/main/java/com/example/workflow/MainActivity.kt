@@ -1,5 +1,6 @@
 package com.example.workflow
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,11 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.workflow.ports.service.EmployeeService
 import com.example.workflow.ui.theme.WorkFlowTheme
 import com.example.workflow.utils.InternetChecker
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class MainActivity : ComponentActivity() {
+    private val db = FirebaseFirestore.getInstance().collection("users")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -28,8 +32,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-        print(InternetChecker.checkConnectivity(this))
+        val intent = Intent(this, EmployeeService::class.java)
+        startService(intent)
 
 
     }
