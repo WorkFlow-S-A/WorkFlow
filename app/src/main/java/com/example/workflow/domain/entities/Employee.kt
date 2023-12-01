@@ -12,8 +12,6 @@ data class Employee(
     var workHours: EmployeeWorkHours,
     var workedHours: EmployeeWorkedHours,
     var email : Email,
-
-
 ){
 
     override fun toString(): String{
