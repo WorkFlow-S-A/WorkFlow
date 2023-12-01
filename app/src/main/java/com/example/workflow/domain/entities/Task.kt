@@ -1,6 +1,5 @@
 package com.example.workflow.domain.entities
 
-import android.app.ActivityManager.TaskDescription
 import java.util.Calendar
 import java.util.UUID
 
