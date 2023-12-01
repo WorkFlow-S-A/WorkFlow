@@ -41,7 +41,8 @@ private val LightColorScheme = lightColorScheme(
 fun WorkFlowTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    //Lo pongo en false para el color de fondo del preview
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

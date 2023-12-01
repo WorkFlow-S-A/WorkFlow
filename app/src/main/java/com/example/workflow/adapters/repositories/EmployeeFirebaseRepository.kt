@@ -1,4 +1,4 @@
-package com.example.workflow.adapters
+package com.example.workflow.adapters.repositories
 
 import android.content.ContentValues.TAG
 import android.util.Log

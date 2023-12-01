@@ -19,7 +19,7 @@
             android:exported="false">
         </service>
         <activity
-            android:name=".ui.HomeActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.WorkFlow">
