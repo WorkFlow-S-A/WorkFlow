@@ -4,6 +4,7 @@
     <string name="logIn">Log In</string>
     <string name="forgotPassword">Forgot Password</string>
     <string name="createCompany">Create Company</string>
+    <string name="taskEmployee">Task Employee</string>
     <string name="buttonHome1">Ya tengo una Empresa</string>
     <string name="buttonHome2">Nueva Empresa</string>
     <string name="version_app">Version 1.0</string>

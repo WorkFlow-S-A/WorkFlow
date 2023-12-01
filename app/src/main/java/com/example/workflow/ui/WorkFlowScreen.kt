@@ -20,7 +20,8 @@ enum class WorkFlowScreen(@StringRes val title:Int){
     Home(title = R.string.home),
     LogIn(title = R.string.logIn),
     ForgotPassword(title = R.string.forgotPassword),
-    CreateCompany(title= R.string.createCompany)
+    CreateCompany(title= R.string.createCompany),
+    TaskEmployee(title = R.string.taskEmployee)
 }
 @Composable
 fun WorkFlowApp(){
@@ -42,5 +43,11 @@ fun WorkFlowApp(){
         composable(route = WorkFlowScreen.CreateCompany.name){
             CreateCompanyCompose(navController = navController)
         }
+
+        composable(route = WorkFlowScreen.TaskEmployee.name){
+            TaskEmployeeCompose(navController = navController)
+        }
+
+
     }
 }
