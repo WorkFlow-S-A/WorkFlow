@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import java.util.Calendar
+import java.util.Date
 import java.util.UUID
 
 class TaskRoomRepository(private val taskDao: TaskRoomDao): TaskLocalRepository {
@@ -47,15 +47,15 @@ class TaskRoomRepository(private val taskDao: TaskRoomDao): TaskLocalRepository 
     }
 
     private fun RoomTask.toTask(): Task {
-        val startHourCalendar = Calendar.getInstance().apply { timeInMillis = startHour }
-        val endHourCalendar = Calendar.getInstance().apply { timeInMillis = endHour }
+        val startHourDate = Date(startHour)
+        val endHourDate = Date(endHour)
 
         return Task(
             id = this.id,
             name = TaskName(this.name),
             description = TaskDescription(this.description),
-            startHour = StartHour(startHourCalendar),
-            endHour = EndHour(endHourCalendar),
+            startHour = StartHour(startHourDate),
+            endHour = EndHour(endHourDate),
             done = this.done
         )
     }
@@ -65,8 +65,8 @@ class TaskRoomRepository(private val taskDao: TaskRoomDao): TaskLocalRepository 
             id = this.id,
             name = this.name.toString(),
             description = this.description.toString(),
-            startHour = 10, // TODO: this.startHour.timeInMillis,
-            endHour = 10, // TODO: this.endHour.timeInMillis,
+            startHour = this.startHour.startHour.time,
+            endHour = this.endHour.endHour.time,
             done = this.done,
             needSync = needSync
         )

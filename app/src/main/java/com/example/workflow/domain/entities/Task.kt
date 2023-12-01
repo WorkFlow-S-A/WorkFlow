@@ -1,6 +1,6 @@
 package com.example.workflow.domain.entities
 
-import java.util.Calendar
+import java.util.Date
 import java.util.UUID
 
 data class Task(val id: UUID = UUID.randomUUID(),
@@ -46,19 +46,20 @@ value class TaskDescription(private val description: String) {
 }
 
 @JvmInline
-value class StartHour(private val startHour: Calendar) {
+value class StartHour(val startHour: Date) {
     init {
-        require(!startHour.before(Calendar.getInstance())) { "startHour must not be earlier than the current date." }
+        require(!startHour.before(Date())) { "startHour must not be earlier than the current date." }
     }
+
     override fun toString(): String {
         return "Start hour = $startHour"
     }
 }
 
 @JvmInline
-value class EndHour(private val endHour: Calendar) {
+value class EndHour(val endHour: Date) {
     init {
-        require(!endHour.before(Calendar.getInstance())) { "endHour must not be earlier than the current date." }
+        require(!endHour.before(Date())) { "endHour must not be earlier than the current date." }
     }
     override fun toString(): String {
         return "End hour = $endHour"
