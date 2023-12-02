@@ -13,13 +13,14 @@ import java.util.UUID
 data class RoomEmployee(
     @PrimaryKey(autoGenerate = true)
     val id: UUID,
-    val employeeID: String,
+    val employeeId: String,
     val name: String,
     val surname: String,
     val schedule: String,
     val workHours: Int,
     val workedHours: Int,
-    val email: String
+    val email: String,
+    val needSync: Boolean
 ) {
     companion object {
         fun convertScheduleToJson(schedule: TreeSet<Task>): String {
