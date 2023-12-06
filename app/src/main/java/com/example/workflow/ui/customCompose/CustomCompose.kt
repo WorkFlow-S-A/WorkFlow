@@ -38,6 +38,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
@@ -80,6 +81,21 @@ fun UserTextField(text: String, userText:String,onTextValueChange: (String) -> U
         label = { Text(text = text) },
         maxLines = 1,
         modifier = Modifier.fillMaxWidth())
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TextFieldCustom(text: String, userText:String){
+
+    TextField(
+        value = userText,
+        onValueChange = {},
+        label = { Text(text = text) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+        enabled = false
+    )
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
