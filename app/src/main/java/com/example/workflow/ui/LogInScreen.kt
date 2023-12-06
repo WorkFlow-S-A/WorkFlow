@@ -97,7 +97,10 @@ fun LogInCompose(navController: NavController) {
                     val context = LocalContext.current
                     UserTextField(text = "Usuario",userName, onTextValueChange = { userName = it})
                     PasswordTextField(text="Contraseña",userPassword, onPasswordValueChange = {userPassword = it})
-                    FilledButton(onClick = { Toast.makeText(context,userName,Toast.LENGTH_LONG).show() }, text = "ENTRAR",
+                    FilledButton(onClick =
+                        {   Toast.makeText(context,userName,Toast.LENGTH_LONG).show()
+                            navController.navigate(WorkFlowScreen.TaskEmployee.name)
+                        }, text = "ENTRAR",
                         Modifier
                             .padding(top = 10.dp)
                             .fillMaxWidth())

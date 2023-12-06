@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.example.workflow.MainActivity
-import com.example.workflow.ui.HomeActivity
 
 
 class InternetChecker {

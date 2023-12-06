@@ -82,7 +82,7 @@ fun CreateCompanyCompose(navController: NavController) {
                     FilledButton(onClick = { /*TODO*/ }, text = "Crear empresa", modifier = Modifier
                         .padding(top = 10.dp)
                         .fillMaxWidth())
-                    CustomClickableText(text = "¿Ya tienes una empresa?", modifier = Modifier.align(Alignment.Start).padding(top=10.dp), onClick = {navController.navigate("logIn")})
+                    CustomClickableText(text = "¿Ya tienes o perteneces a una empresa?", modifier = Modifier.align(Alignment.Start).padding(top=10.dp), onClick = {navController.navigate("logIn")})
 
                 }
                 Text(text = LocalContext.current.getString(R.string.version_app), style = TextStyle(Color.Gray))
