@@ -21,7 +21,7 @@ data class Task(val id: UUID = UUID.randomUUID(),
 }
 
 @JvmInline
-value class TaskName(private val name: String) {
+value class TaskName(val name: String) {
 
     init {
         require(
@@ -35,7 +35,7 @@ value class TaskName(private val name: String) {
 }
 
 @JvmInline
-value class TaskDescription(private val description: String) {
+value class TaskDescription(val description: String) {
     init {
         require(description.length >= 100) { "The description length must be 100 character or fewer" }
     }

@@ -1,5 +1,6 @@
 package com.example.workflow.domain.entities
 
+import java.util.TreeSet
 import java.util.UUID
 import java.util.regex.Pattern
 
@@ -8,13 +9,11 @@ data class Employee(
     var employeeId: EmployeeID,
     var name: EmployeeName,
     var surname: EmployeeSurname,
-    var schedule: EmployeeSchedule,
+    var schedule: EmployeeSchedule = EmployeeSchedule(schedule = TreeSet<Task>(TaskComparator())),
     var workHours: EmployeeWorkHours,
     var workedHours: EmployeeWorkedHours,
     var email : Email,
-
-
-){
+    ){
 
     override fun toString(): String{
         return "Employee { ID= $id" +
@@ -26,7 +25,7 @@ data class Employee(
 
 
 @JvmInline
-value class EmployeeID(private val id : String){
+value class EmployeeID(val id : String){
     init {
         require(
             Pattern.compile("\\d{8}").matcher(id).matches()
@@ -41,16 +40,17 @@ value class EmployeeID(private val id : String){
 }
 
 @JvmInline
-value class EmployeeName(private val name : String){
+value class EmployeeName(val name : String){
     init {
         require(
             name.length in 2..20
         ){
             "The name of the employee must be between 2 ann 20 characters"
         }
-
+        println("Longitud de la cadena: ${name.length}")
+        println("Contenido de la cadena: $name")
         require(
-            Pattern.compile("\\D").matcher(name).matches()
+            Pattern.compile("[a-zA-Z]+").matcher(name).matches()
         ){
             "The name can not have numbers."
         }
@@ -62,19 +62,19 @@ value class EmployeeName(private val name : String){
 }
 
 @JvmInline
-value class EmployeeSurname(private val surname : String){
+value class EmployeeSurname(val surname : String){
 
     init {
         require(
         surname.length in 2..20
         ){
-            "The name of the employee must be between 2 ann 20 characters"
+            "The surname of the employee must be between 2 ann 20 characters"
         }
 
         require(
-        Pattern.compile("\\D").matcher(surname).matches()
+        Pattern.compile("[a-zA-Z]+").matcher(surname).matches()
         ){
-            "The name can not have numbers."
+            "The surname can not have numbers."
         }
     }
 
@@ -84,7 +84,7 @@ value class EmployeeSurname(private val surname : String){
 }
 
 @JvmInline
-value class EmployeeSchedule(private val schedule : Map<String, Int>){
+value class EmployeeSchedule(val schedule : TreeSet<Task>){
     init {
         require(schedule.size in 0..12){
             "Work hours must be between 0 and 12."
@@ -97,7 +97,7 @@ value class EmployeeSchedule(private val schedule : Map<String, Int>){
 }
 
 @JvmInline
-value class EmployeeWorkHours(private val workHours: Int){
+value class EmployeeWorkHours(val workHours: Int){
     init {
         require(workHours in 0..12){
             "Work hours must be between 0 and 12."
@@ -112,7 +112,7 @@ value class EmployeeWorkHours(private val workHours: Int){
 }
 
 @JvmInline
-value class EmployeeWorkedHours(private val workedHours: Int){
+value class EmployeeWorkedHours(val workedHours: Int){
     init {
         require(workedHours in 0..12){
             "Work hours must be between 0 and 12."
@@ -125,10 +125,10 @@ value class EmployeeWorkedHours(private val workedHours: Int){
 }
 
 @JvmInline
-value class Email(private val email : String){
+value class Email(val email : String){
     init {
         require(
-            Pattern.compile("^[\\w\\.-]+@[a-zA-Z\\d\\.-]+\\.[a-zA-Z]{2,}\$\n").matcher(email).matches()
+            Pattern.compile("[a-zA-Z0-9.-]+@[a-zA-Z0-9-]+\\.[a-zA-Z]{2,}").matcher(email).matches()
         ){
             "The email do not have a right format.(example@domain.com "
         }
@@ -140,7 +140,7 @@ value class Email(private val email : String){
 }
 
 @JvmInline
-value class Phone(private val phone : String){
+value class Phone(val phone : String){
     init {
         require(
             Pattern.compile("^\\+(?:\\d{1,3})?[-.\\s]?\\d{10}\$\n").matcher(phone).matches()
@@ -151,4 +151,12 @@ value class Phone(private val phone : String){
     override fun toString(): String {
         return "Phone= $phone"
     }
+}
+class TaskComparator : Comparator<Task>{
+
+
+    override fun compare(o1: Task?, o2: Task?): Int {
+        TODO("Compare of tasks")
+    }
+
 }
