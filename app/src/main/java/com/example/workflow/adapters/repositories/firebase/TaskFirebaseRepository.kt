@@ -1,4 +1,4 @@
-package com.example.workflow.adapters.repositories
+package com.example.workflow.adapters.repositories.firebase
 
 import com.example.workflow.domain.entities.Task
 import com.example.workflow.ports.repository.TaskRemoteRepository

@@ -44,6 +44,7 @@ class EmployeeDTO private constructor() {
             employeeDTO.id = employee.id.toString()
             employeeDTO.name = employee.name.name
             employeeDTO.surname = employee.surname.surname
+            employeeDTO.employeeId = employee.employeeId.id
             employeeDTO.schedule = employee.schedule.schedule.toList()
             employeeDTO.workHours = employee.workHours.workHours
             employeeDTO.workedHours = employee.workedHours.workedHours

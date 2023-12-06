@@ -4,18 +4,20 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import com.example.workflow.App
 import com.example.workflow.utils.InternetChecker
 import com.example.workflow.domain.entities.Employee
 import com.example.workflow.ports.repository.EmployeeLocalRepository
 import com.example.workflow.ports.repository.EmployeeRemoteRepository
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 import java.util.UUID
 
 class EmployeeService() : Service(){
-
+    private val internetChecker : InternetChecker = App.instance.internetChecker
 
     companion object{
 
@@ -23,9 +25,9 @@ class EmployeeService() : Service(){
         var employeeRemoteRepository: EmployeeRemoteRepository? = null
         var employeeLocalRepository: EmployeeLocalRepository? = null
         private var thisContext : Context? = null
-        fun getService(remoteRepository: EmployeeRemoteRepository,
-                       localRepository: EmployeeLocalRepository,
-                       context: Context) : EmployeeService{
+        fun getService(remoteRepository: EmployeeRemoteRepository? = null,
+                       localRepository: EmployeeLocalRepository? = null,
+                       context: Context? = null ) : EmployeeService{
             if(instance == null) {
                 thisContext = context
                 employeeRemoteRepository = remoteRepository
@@ -39,7 +41,7 @@ class EmployeeService() : Service(){
     }
 
     suspend fun saveEmployee(employee: Employee){
-        if(InternetChecker.checkConnectivity(thisContext)){
+        if(internetChecker.checkConnectivity()){
             employeeRemoteRepository?.insertEmployee(employee = employee)
            // employeeLocalRepository?.saveEmployee(employee = employee, false)
         }else{
@@ -60,7 +62,7 @@ class EmployeeService() : Service(){
             if(employeeStream?.count()!! > 0) {
                 val employee : Employee? = employeeStream.first()
                 if(employee != null){
-                    employeeLocalRepository?.saveEmployee(employee = employee, false)
+                    //employeeLocalRepository?.saveEmployee(employee = employee, false)
                     return employee
                 } else throw InternalError("There was a problem while the object was being found.")
 
@@ -84,16 +86,19 @@ class EmployeeService() : Service(){
 
     suspend fun deleteEmployee(employee : Employee){
         //TODO : See the return errors that throw DB's
-        if(InternetChecker.checkConnectivity(thisContext)){
+        if(internetChecker.checkConnectivity()){
             employeeLocalRepository?.deleteEmployee(employee)
         }
-        InternetChecker.checkConnectivity(thisContext)
+        internetChecker.checkConnectivity()
         employeeRemoteRepository?.deleteEmployee(employee)
     }
 
-    suspend fun updateEmployee(employee: Employee){
-        if(InternetChecker.checkConnectivity(thisContext)){
-            employeeRemoteRepository?.updateEmployee(employee)
+    suspend fun updateEmployee(employee: Employee, field : String, newData : String){
+        if(internetChecker.checkConnectivity()){
+            employeeRemoteRepository?.updateEmployeeField(
+                id = employee.id,
+                fieldType = field,
+                newData = newData)
             employeeLocalRepository?.saveEmployee(employee, false)
         }else employeeLocalRepository?.saveEmployee(employee, true)
 

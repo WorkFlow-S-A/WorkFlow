@@ -36,7 +36,7 @@ class TaskService(private val localRepository: TaskLocalRepository,
     }
 
     suspend fun getAllTasks(): List<Task> {
-        return if (InternetChecker.checkConnectivity(this)) {
+        return if (InternetChecker.getInstance(null).checkConnectivity()) {
             try {
                 val tasksFromRemote = remoteRepository.getAllTasksStream().first()
                 localRepository.saveAll(tasksFromRemote)
@@ -49,7 +49,7 @@ class TaskService(private val localRepository: TaskLocalRepository,
         }
     }
     suspend fun createTask(task: Task) {
-        if (InternetChecker.checkConnectivity(this)) {
+        if (InternetChecker.getInstance(null).checkConnectivity()) {
             try {
                 remoteRepository.insertTask(task)
                 localRepository.insertTask(task, false)
@@ -62,7 +62,7 @@ class TaskService(private val localRepository: TaskLocalRepository,
     }
 
     suspend fun deleteTask(task: Task) {
-        if (InternetChecker.checkConnectivity(this)) {
+        if (InternetChecker.getInstance(null).checkConnectivity()) {
             try {
                 remoteRepository.deleteTask(task)
                 localRepository.deleteTask(task)
@@ -75,7 +75,7 @@ class TaskService(private val localRepository: TaskLocalRepository,
     }
 
     suspend fun updateTask(task: Task) {
-        if (InternetChecker.checkConnectivity(this)) {
+        if (InternetChecker.getInstance(null).checkConnectivity()) {
             try {
                 remoteRepository.updateTask(task)
                 localRepository.updateTask(task, false)

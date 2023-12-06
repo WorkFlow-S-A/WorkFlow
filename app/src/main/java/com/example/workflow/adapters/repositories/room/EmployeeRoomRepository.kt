@@ -1,4 +1,4 @@
-package com.example.workflow.adapters
+package com.example.workflow.adapters.repositories.room
 
 import com.example.workflow.domain.entities.Employee
 import com.example.workflow.ports.repository.EmployeeLocalRepository

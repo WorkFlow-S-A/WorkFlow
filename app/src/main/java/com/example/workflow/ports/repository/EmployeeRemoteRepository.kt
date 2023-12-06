@@ -1,6 +1,7 @@
 package com.example.workflow.ports.repository
 
 import com.example.workflow.domain.entities.Employee
+import com.example.workflow.domain.entities.EmployeeName
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -14,7 +15,7 @@ interface EmployeeRemoteRepository {
 
     suspend fun deleteEmployee(employee : Employee)
 
-    suspend fun updateEmployee(employee: Employee)
+    suspend fun updateEmployeeField(id: UUID, newData : String, fieldType : String )
 
 
 
