@@ -12,9 +12,7 @@ data class Employee(
     var schedule: EmployeeSchedule = EmployeeSchedule(schedule = TreeSet<Task>(TaskComparator())),
     var workHours: EmployeeWorkHours,
     var workedHours: EmployeeWorkedHours,
-    var email : Email
-
-
+    var email : Email,
     ){
 
     override fun toString(): String{
