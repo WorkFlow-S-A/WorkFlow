@@ -10,6 +10,7 @@ import com.example.workflow.utils.InternetChecker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import java.lang.IllegalArgumentException
 import java.util.UUID
 
@@ -19,8 +20,9 @@ class TaskService(private val localRepository: TaskLocalRepository,
 
     suspend fun getTaskById(id: UUID): Task {
         var taskStream: Flow<Task?> = localRepository.getTaskByIdStream(id = id)
-        if (taskStream.count() > 0) {
-            return taskStream.first()?: throw IllegalArgumentException("Not found")
+        var task = taskStream.firstOrNull()
+        if (task != null) {
+            return task
         }
 
         taskStream = remoteRepository.getTaskByIdStream(id = id)
