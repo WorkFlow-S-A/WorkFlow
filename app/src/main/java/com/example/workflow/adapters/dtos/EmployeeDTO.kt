@@ -26,7 +26,7 @@ class EmployeeDTO private constructor() {
     companion object{
         fun toEmployee(employeeDTO: EmployeeDTO) : Employee{
             val employee : Employee = Employee(
-                id = UUID.fromString(employeeDTO.id),
+                id = employeeDTO.id,
                 employeeId = EmployeeID(employeeDTO.employeeId),
                 name = EmployeeName(employeeDTO.name),
                 surname = EmployeeSurname(employeeDTO.surname),
@@ -41,7 +41,7 @@ class EmployeeDTO private constructor() {
 
         fun fromEmployee(employee: Employee) : EmployeeDTO{
             var employeeDTO = EmployeeDTO()
-            employeeDTO.id = employee.id.toString()
+            employeeDTO.id = employee.id
             employeeDTO.name = employee.name.name
             employeeDTO.surname = employee.surname.surname
             employeeDTO.employeeId = employee.employeeId.id

@@ -15,7 +15,7 @@ class EmployeeFirebaseRepository : EmployeeRemoteRepository{
     private val db = FirebaseFirestore.getInstance().collection("users")
 
     override suspend fun insertEmployee(employee: Employee) {
-        db.document(employee.id.toString()).set(EmployeeDTO.fromEmployee(employee))
+        db.document(employee.id).set(EmployeeDTO.fromEmployee(employee))
             .addOnSuccessListener {
             Log.d("Firebase Operation", "successful insertion")
             }
@@ -53,18 +53,18 @@ class EmployeeFirebaseRepository : EmployeeRemoteRepository{
     }
 
     override suspend fun deleteEmployee(employee: Employee) {
-        db.document(employee.id.toString())
+        db.document(employee.id)
             .delete()
             .addOnSuccessListener { Log.d("Firebase operation", "DocumentSnapshot successfully deleted!") }
             .addOnFailureListener { e -> Log.w("Firebase operation", "Error deleting document", e) }
     }
 
-    override suspend fun updateEmployeeField(id: UUID, newData : String, fieldType : String) {
-        val data : DocumentSnapshot? =  db.document(id.toString()).get().await()
+    override suspend fun updateEmployeeField(id: String, newData : String, fieldType : String) {
+        val data : DocumentSnapshot? =  db.document(id).get().await()
 
         if(data != null && data.exists()){
             if(data.data!!.contains(fieldType)){
-                db.document(id.toString())
+                db.document(id)
                     .update(fieldType, newData)
                     .addOnSuccessListener { Log.d("Firebase operation", "Document successfully updated!") }
                     .addOnFailureListener { e -> Log.w("Firebase operation", "Error updating document", e) }

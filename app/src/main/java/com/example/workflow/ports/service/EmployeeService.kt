@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import com.example.workflow.App
 import com.example.workflow.utils.InternetChecker
 import com.example.workflow.domain.entities.Employee
@@ -40,9 +41,21 @@ class EmployeeService() : Service(){
         }
     }
 
+    /**
+     * Remember that the password of user is {name}_{employeeId}
+     * */
     suspend fun saveEmployee(employee: Employee){
         if(internetChecker.checkConnectivity()){
-            employeeRemoteRepository?.insertEmployee(employee = employee)
+            val password = employee.name.name + "_" + employee.employeeId.id
+            val uid = App.instance.firebaseAuthentication.createUser(employee.email.email, password)
+
+            if(uid != null){
+                employee.id = uid
+                employeeRemoteRepository?.insertEmployee(employee = employee)
+            }else{
+                Log.w("Employee operation", "User did not add")
+            }
+
            // employeeLocalRepository?.saveEmployee(employee = employee, false)
         }else{
             employeeLocalRepository?.saveEmployee(employee = employee, true)

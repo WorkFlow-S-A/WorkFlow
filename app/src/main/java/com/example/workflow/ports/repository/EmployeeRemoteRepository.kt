@@ -15,7 +15,7 @@ interface EmployeeRemoteRepository {
 
     suspend fun deleteEmployee(employee : Employee)
 
-    suspend fun updateEmployeeField(id: UUID, newData : String, fieldType : String )
+    suspend fun updateEmployeeField(id: String, newData : String, fieldType : String )
 
 
 

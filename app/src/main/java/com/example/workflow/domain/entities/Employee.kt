@@ -5,7 +5,7 @@ import java.util.UUID
 import java.util.regex.Pattern
 
 data class Employee(
-    val id: UUID = UUID.randomUUID(),
+    var id: String = UUID.randomUUID().toString(),
     var employeeId: EmployeeID,
     var name: EmployeeName,
     var surname: EmployeeSurname,
