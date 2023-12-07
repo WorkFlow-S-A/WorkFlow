@@ -12,10 +12,12 @@ import java.util.UUID
 import kotlinx.coroutines.flow.flow
 
 class EmployeeFirebaseRepository : EmployeeRemoteRepository{
-    private val db = FirebaseFirestore.getInstance().collection("users")
+    private val db = FirebaseFirestore.getInstance().collection("Company")
 
     override suspend fun insertEmployee(employee: Employee) {
-        db.document(employee.id).set(EmployeeDTO.fromEmployee(employee))
+
+        db.document(CompanyFirebaseRepository.getCurrentCompanyId()).collection("Employees")
+            .document(employee.id).set(EmployeeDTO.fromEmployee(employee))
             .addOnSuccessListener {
             Log.d("Firebase Operation", "successful insertion")
             }
@@ -26,7 +28,8 @@ class EmployeeFirebaseRepository : EmployeeRemoteRepository{
     }
 
     override suspend fun getAllEmployeesStream(): Flow<List<Employee>> = flow {
-        val querySnapshot = db.get().await()
+        val querySnapshot = db.document(CompanyFirebaseRepository.getCurrentCompanyId())
+            .collection("Employees").get().await()
         val employees : List<EmployeeDTO?> = querySnapshot.documents.map { document ->
             document.toObject(EmployeeDTO::class.java)
         }
@@ -38,7 +41,8 @@ class EmployeeFirebaseRepository : EmployeeRemoteRepository{
     }
 
     override suspend fun getByIdStream(id: UUID): Flow<Employee?> = flow{
-        val data : DocumentSnapshot? =  db.document(id.toString()).get().await()
+        val data : DocumentSnapshot? =  db.document(CompanyFirebaseRepository.getCurrentCompanyId())
+            .collection("Employees").document(id.toString()).get().await()
         if(data != null){
             val employeeDTO : EmployeeDTO? = data.toObject(EmployeeDTO :: class.java)
             if(employeeDTO == null){
@@ -53,18 +57,23 @@ class EmployeeFirebaseRepository : EmployeeRemoteRepository{
     }
 
     override suspend fun deleteEmployee(employee: Employee) {
-        db.document(employee.id)
+        db.document(CompanyFirebaseRepository.getCurrentCompanyId())
+            .collection("Employees").document(employee.id)
             .delete()
-            .addOnSuccessListener { Log.d("Firebase operation", "DocumentSnapshot successfully deleted!") }
-            .addOnFailureListener { e -> Log.w("Firebase operation", "Error deleting document", e) }
+            .addOnSuccessListener {
+                Log.d("Firebase operation", "DocumentSnapshot successfully deleted!") }
+            .addOnFailureListener { e ->
+                Log.w("Firebase operation", "Error deleting document", e) }
     }
 
     override suspend fun updateEmployeeField(id: String, newData : String, fieldType : String) {
-        val data : DocumentSnapshot? =  db.document(id).get().await()
+        val data : DocumentSnapshot? =  db.document(CompanyFirebaseRepository.getCurrentCompanyId())
+            .collection("Employees").document(id).get().await()
 
         if(data != null && data.exists()){
             if(data.data!!.contains(fieldType)){
-                db.document(id)
+                db.document(CompanyFirebaseRepository.getCurrentCompanyId())
+                    .collection("Employees").document(id)
                     .update(fieldType, newData)
                     .addOnSuccessListener { Log.d("Firebase operation", "Document successfully updated!") }
                     .addOnFailureListener { e -> Log.w("Firebase operation", "Error updating document", e) }

@@ -12,7 +12,7 @@ class App : Application() {
     val employeeService by lazy {
         EmployeeService.getService(
             EmployeeFirebaseRepository(),
-            //EmployeeRoomRepository(), TODO : PARTE DE ROOM
+            //EmployeeRoomRepository(), // TODO : PARTE DE ROOM
             context = this
         )
     }
@@ -32,6 +32,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+
+        firebaseAuthentication.onCreate()
     }
 
 

@@ -88,6 +88,7 @@ fun StartCompose(navController: NavController){
                                           runBlocking {
                                               mySuspendFunction(App.instance.employeeService)
                                           }
+                        navController.navigate("logIn")
                 }, text = LocalContext.current.getString(R.string.buttonHome1),Modifier.padding(10.dp))
                     Text(
                         text = LocalContext.current.getString(R.string.lorem_ipsum_small),

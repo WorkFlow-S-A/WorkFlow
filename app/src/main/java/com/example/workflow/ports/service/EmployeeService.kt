@@ -10,10 +10,8 @@ import com.example.workflow.utils.InternetChecker
 import com.example.workflow.domain.entities.Employee
 import com.example.workflow.ports.repository.EmployeeLocalRepository
 import com.example.workflow.ports.repository.EmployeeRemoteRepository
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 import java.util.UUID
 
@@ -46,15 +44,8 @@ class EmployeeService() : Service(){
      * */
     suspend fun saveEmployee(employee: Employee){
         if(internetChecker.checkConnectivity()){
-            val password = employee.name.name + "_" + employee.employeeId.id
-            val uid = App.instance.firebaseAuthentication.createUser(employee.email.email, password)
 
-            if(uid != null){
-                employee.id = uid
-                employeeRemoteRepository?.insertEmployee(employee = employee)
-            }else{
-                Log.w("Employee operation", "User did not add")
-            }
+            employeeRemoteRepository?.insertEmployee(employee = employee)
 
            // employeeLocalRepository?.saveEmployee(employee = employee, false)
         }else{

@@ -11,7 +11,7 @@ data class Employee(
     var surname: EmployeeSurname,
     var schedule: EmployeeSchedule = EmployeeSchedule(schedule = TreeSet<Task>(TaskComparator())),
     var workHours: EmployeeWorkHours,
-    var workedHours: EmployeeWorkedHours,
+    var workedHours: EmployeeWorkedHours = EmployeeWorkedHours(0),
     var email : Email,
     ){
 
