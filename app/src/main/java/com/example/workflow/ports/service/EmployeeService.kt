@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 import java.util.UUID
 
-class EmployeeService() : Service(){
+class EmployeeService : Service(){
     private val internetChecker : InternetChecker = App.instance.internetChecker
 
     companion object{
