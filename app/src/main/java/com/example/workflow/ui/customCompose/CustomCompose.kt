@@ -1,27 +1,44 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+        @file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.example.workflow.ui.customCompose
 
+import android.content.ContentValues.TAG
+import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Task
+import androidx.compose.material.icons.filled.Work
+import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
@@ -30,8 +47,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -43,6 +63,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.workflow.ui.WorkFlowScreen
 import com.example.workflow.ui.theme.BlueWorkFlow
 import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.jua
@@ -57,6 +81,21 @@ fun UserTextField(text: String, userText:String,onTextValueChange: (String) -> U
         label = { Text(text = text) },
         maxLines = 1,
         modifier = Modifier.fillMaxWidth())
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TextFieldCustom(text: String, userText:String){
+
+    TextField(
+        value = userText,
+        onValueChange = {},
+        label = { Text(text = text) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+        enabled = false
+    )
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -108,7 +147,8 @@ fun FilledButton(onClick: () -> Unit, text: String, modifier: Modifier){
     }
 }
 
-@Preview
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar() {
     TopAppBar(
@@ -124,6 +164,41 @@ fun TopBar() {
         }
     )
 }
+
+
+@Composable
+fun BottomBar(navController: NavController){
+    BottomAppBar(
+        containerColor = BlueWorkFlow,
+        contentColor = Color.White,
+    ) {
+        Row(modifier= Modifier.fillMaxWidth(),verticalAlignment = Alignment.CenterVertically,horizontalArrangement = Arrangement.SpaceAround){
+            NavigationItem(navController = navController, route = WorkFlowScreen.TaskEmployee.name, icon = Icons.Default.Task, label = "Tareas")
+            NavigationItem(navController = navController, route = WorkFlowScreen.ScheduleControlEmployee.name, icon = Icons.Default.Work, label = "Marcar")
+            NavigationItem(navController = navController, route = WorkFlowScreen.Profile.name, icon = Icons.Default.Person, label = "Perfil")
+        }
+
+    }
+}
+
+
+
+@Composable
+fun NavigationItem(navController: NavController,route:String, icon: ImageVector,label:String){
+    val isCurrentDestination = navController.currentDestination?.route == route
+
+    IconButton(
+        modifier = Modifier
+            .clip(CircleShape)
+            .background(if (isCurrentDestination) Color.White else BlueWorkFlow),
+        onClick = { if (!isCurrentDestination) navController.navigate(route) }) {
+
+        Icon(tint = if(isCurrentDestination) BlueWorkFlow else Color.White,imageVector = icon, contentDescription = label)
+    }
+
+
+}
+
 
 
 

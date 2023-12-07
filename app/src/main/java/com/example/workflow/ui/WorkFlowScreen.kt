@@ -1,5 +1,7 @@
 package com.example.workflow.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -21,8 +23,11 @@ enum class WorkFlowScreen(@StringRes val title:Int){
     LogIn(title = R.string.logIn),
     ForgotPassword(title = R.string.forgotPassword),
     CreateCompany(title= R.string.createCompany),
-    TaskEmployee(title = R.string.taskEmployee)
+    TaskEmployee(title = R.string.taskEmployee),
+    Profile(title = R.string.profile),
+    ScheduleControlEmployee(title = R.string.scheduleControlEmployee)
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WorkFlowApp(){
     val navController = rememberNavController()
@@ -46,6 +51,14 @@ fun WorkFlowApp(){
 
         composable(route = WorkFlowScreen.TaskEmployee.name){
             TaskEmployeeCompose(navController = navController)
+        }
+
+        composable(route = WorkFlowScreen.Profile.name){
+            ProfileCompose(navController = navController)
+        }
+
+        composable(route = WorkFlowScreen.ScheduleControlEmployee.name){
+            ScheduleControlEmployeeCompose(navController = navController)
         }
 
 
