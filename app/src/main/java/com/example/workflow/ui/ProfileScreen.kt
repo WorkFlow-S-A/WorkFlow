@@ -3,6 +3,7 @@ package com.example.workflow.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
@@ -26,8 +28,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -94,28 +98,32 @@ fun ProfileCompose(navController: NavController) {
                         }
 
 
-                        Row(horizontalArrangement = Arrangement.SpaceAround){
-                            Column(){
+                        Row(horizontalArrangement = Arrangement.SpaceAround, modifier= Modifier.fillMaxWidth()){
+
+                            Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
                                 Text("Horas estimadas")
-                                Card(modifier = Modifier.size(60.dp),
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = Color(152, 177, 255)
-                                    )){
+                                Box(
+                                    modifier = Modifier
+                                        .background(Color(152, 177, 255)),
+                                    Center
+                                ){
                                     //Poner las horas
-                                    Text("35h")
+                                    Text("35h",modifier = Modifier.padding(15.dp)
+                                        .clip(RoundedCornerShape(50)))
                                 }
                             }
 
-                            Column(){
+                            Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
                                 Text("Horas realizadas")
-                                Card(modifier = Modifier
-                                    .size(60.dp)
-                                    ,
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = Color(152, 177, 255)
-                                    )){
+                                Box(
+                                    modifier = Modifier
+                                        .background(Color(152, 177, 255)),
+
+                                    Center
+                                    ){
                                     //Poner las horas
-                                    Text("35h")
+                                    Text("35h",modifier = Modifier.padding(15.dp)
+                                        .clip(RoundedCornerShape(50)))
                                 }
                             }
                         }
