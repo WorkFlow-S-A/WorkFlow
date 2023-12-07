@@ -27,16 +27,14 @@ class App : Application() {
         FirebaseAuthentication()
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        instance = this
-        localDatabase = LocalDatabase.getDatabase(this)
-    }
-
     companion object {
         lateinit var instance: App
             private set
     }
-
-
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
+        localDatabase = LocalDatabase.getDatabase(this)
+        firebaseAuthentication.onCreate()
+    }
 }
