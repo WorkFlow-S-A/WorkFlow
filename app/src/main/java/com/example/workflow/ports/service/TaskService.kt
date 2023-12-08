@@ -1,8 +1,10 @@
 package com.example.workflow.ports.service
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import com.example.workflow.App
 import com.example.workflow.domain.entities.Task
 import com.example.workflow.ports.repository.TaskLocalRepository
 import com.example.workflow.ports.repository.TaskRemoteRepository
@@ -11,16 +13,29 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import java.lang.IllegalArgumentException
 import java.util.UUID
 
-class TaskService(private val localRepository: TaskLocalRepository,
-                  private val remoteRepository: TaskRemoteRepository
-): Service() {
+class TaskService(): Service() {
+
+    private val internetChecker = App.instance.internetChecker
+
+    companion object{
+        private lateinit var instance : TaskService
+        lateinit var remoteRepository: TaskRemoteRepository
+        lateinit var localRepository: TaskLocalRepository
+        fun getService(taskRemoteRepository: TaskRemoteRepository,
+                       taskLocalRepository: TaskLocalRepository, ) : TaskService {
+
+            remoteRepository = taskRemoteRepository
+            localRepository = taskLocalRepository
+            instance = TaskService()
+            return instance
+        }
+    }
 
     suspend fun getTaskById(id: UUID): Task {
         var taskStream: Flow<Task?> = localRepository.getTaskByIdStream(id = id)
-        var task = taskStream.firstOrNull()
+        val task = taskStream.firstOrNull()
         if (task != null) {
             return task
         }
@@ -38,7 +53,7 @@ class TaskService(private val localRepository: TaskLocalRepository,
     }
 
     suspend fun getAllTasks(): List<Task> {
-        return if (InternetChecker.getInstance(null).checkConnectivity()) {
+        return if (internetChecker.checkConnectivity()) {
             try {
                 val tasksFromRemote = remoteRepository.getAllTasksStream().first()
                 localRepository.saveAll(tasksFromRemote)
@@ -51,7 +66,7 @@ class TaskService(private val localRepository: TaskLocalRepository,
         }
     }
     suspend fun createTask(task: Task) {
-        if (InternetChecker.getInstance(null).checkConnectivity()) {
+        if (internetChecker.checkConnectivity()) {
             try {
                 remoteRepository.insertTask(task)
                 localRepository.insertTask(task, false)
@@ -64,7 +79,7 @@ class TaskService(private val localRepository: TaskLocalRepository,
     }
 
     suspend fun deleteTask(task: Task) {
-        if (InternetChecker.getInstance(null).checkConnectivity()) {
+        if (internetChecker.checkConnectivity()) {
             try {
                 remoteRepository.deleteTask(task)
                 localRepository.deleteTask(task)
@@ -77,7 +92,7 @@ class TaskService(private val localRepository: TaskLocalRepository,
     }
 
     suspend fun updateTask(task: Task) {
-        if (InternetChecker.getInstance(null).checkConnectivity()) {
+        if (internetChecker.checkConnectivity()) {
             try {
                 remoteRepository.updateTask(task)
                 localRepository.updateTask(task, false)

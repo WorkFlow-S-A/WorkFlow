@@ -38,6 +38,11 @@ import com.example.workflow.domain.entities.EmployeeName
 import com.example.workflow.domain.entities.EmployeeSurname
 import com.example.workflow.domain.entities.EmployeeWorkHours
 import com.example.workflow.domain.entities.EmployeeWorkedHours
+import com.example.workflow.domain.entities.EndHour
+import com.example.workflow.domain.entities.StartHour
+import com.example.workflow.domain.entities.Task
+import com.example.workflow.domain.entities.TaskDescription
+import com.example.workflow.domain.entities.TaskName
 import com.example.workflow.ports.service.EmployeeService
 import com.example.workflow.ui.customCompose.CustomClickableText
 import com.example.workflow.ui.customCompose.EmailTextField
@@ -51,6 +56,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 import java.util.UUID
 
 @Composable
@@ -102,6 +108,7 @@ fun CreateCompanyCompose(navController: NavController) {
                             GlobalScope.launch(Dispatchers.IO) {
 
                                 CompanyFirebaseRepository.createCompany(userEmail, userPassword, companyName)
+                                mySuspendFunction()
 
                             }
                         }
@@ -134,9 +141,9 @@ fun CreateCompanyPreview(){
 }
 
 private suspend fun mySuspendFunction() {
-    var employee : Employee
+
     try {
-        employee = Employee(
+        val employee = Employee(
             employeeId = EmployeeID("12345678"),
             name = EmployeeName("Pedro"),
             surname = EmployeeSurname("Sanchez"),
@@ -144,7 +151,18 @@ private suspend fun mySuspendFunction() {
             workedHours = EmployeeWorkedHours(1),
             email = Email("pedro.sanchez@gmail.com")
         )
+
+        val task = Task(
+            name = TaskName("abcdefg"),
+            description = TaskDescription("abcdefghi"),
+            startHour = StartHour(SimpleDateFormat("dd-MM-yyyy HH:mm").parse("12-12-2025 12:12")),
+            endHour = EndHour(SimpleDateFormat("dd-MM-yyyy HH:mm").parse("15-12-2025 12:12")),
+            done = false
+        )
+
         CompanyFirebaseRepository.addEmployeeToCompany(employee)
+        App.instance.taskService.createTask(task)
+
 
     }catch (e : Exception){
         if(e.cause != null){

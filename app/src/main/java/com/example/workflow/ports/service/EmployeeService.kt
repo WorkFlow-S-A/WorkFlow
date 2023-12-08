@@ -25,15 +25,13 @@ class EmployeeService : Service(){
         private var instance : EmployeeService? = null
         var employeeRemoteRepository: EmployeeRemoteRepository? = null
         var employeeLocalRepository: EmployeeLocalRepository? = null
-        private var thisContext : Context? = null
         fun getService(remoteRepository: EmployeeRemoteRepository? = null,
                        localRepository: EmployeeLocalRepository? = null,
                        context: Context? = null ) : EmployeeService{
             if(instance == null) {
-                thisContext = context
                 employeeRemoteRepository = remoteRepository
                 employeeLocalRepository = localRepository
-                return EmployeeService()
+                instance = EmployeeService()
             }
 
             return instance!!
