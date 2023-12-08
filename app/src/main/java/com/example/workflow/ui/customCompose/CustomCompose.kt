@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Task
@@ -98,6 +99,8 @@ fun TextFieldCustom(text: String, userText:String){
 
 }
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordTextField(text: String, passwordValue:String,onPasswordValueChange: (String) -> Unit){
@@ -141,8 +144,15 @@ fun CustomClickableText(text:String,modifier: Modifier,onClick: () -> Unit){
 }
 
 @Composable
-fun FilledButton(onClick: () -> Unit, text: String, modifier: Modifier){
-    Button(onClick = { onClick() }, modifier = modifier, colors = ButtonDefaults.buttonColors(containerColor = GreenWorkFlow, contentColor = Color.Black), shape = ShapeDefaults.Small) {
+fun FilledButton(onClick: () -> Unit, text: String, modifier: Modifier, containerColor:Color,contentColor:Color){
+
+    Button(
+        onClick = { onClick() },
+        modifier = modifier,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+            contentColor = contentColor),
+        shape = ShapeDefaults.Small) {
         Text(text = text )
     }
 }
@@ -161,9 +171,36 @@ fun TopBar() {
                     fontSize = 25.sp
                 ), text = "WORKFLOW"
             )
+
         }
     )
 }
+
+@Composable
+fun TopBarControl(onClick: () -> Unit, visible: Boolean) {
+    TopAppBar(
+        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = BlueWorkFlow),
+        title = {
+            Text(
+                style = TextStyle(
+                    color = Color.White,
+                    fontFamily = jua,
+                    fontSize = 25.sp
+                ), text = "WORKFLOW"
+            )
+
+        },
+        navigationIcon = {
+            if(visible) {
+                IconButton(onClick = { onClick() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint= Color.White)
+                }
+            }
+        }
+    )
+}
+
+
 
 
 @Composable

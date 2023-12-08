@@ -49,6 +49,7 @@ import com.example.workflow.ui.customCompose.EmailTextField
 import com.example.workflow.ui.customCompose.FilledButton
 import com.example.workflow.ui.customCompose.PasswordTextField
 import com.example.workflow.ui.customCompose.UserTextField
+import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -115,7 +116,8 @@ fun CreateCompanyCompose(navController: NavController) {
 
                     }, text = "Crear empresa", modifier = Modifier
                         .padding(top = 10.dp)
-                        .fillMaxWidth())
+                        .fillMaxWidth(), GreenWorkFlow, Color.Black)
+
                     CustomClickableText(text = "¿Ya tienes o perteneces a una empresa?", modifier = Modifier.align(Alignment.Start).padding(top=10.dp), onClick = {
                         GlobalScope.launch(Dispatchers.IO) {
 

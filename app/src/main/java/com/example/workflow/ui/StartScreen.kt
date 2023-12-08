@@ -90,7 +90,7 @@ fun StartCompose(navController: NavController){
                         modifier = Modifier.padding(10.dp),
                         color = Color.White
                     )
-                    FilledButton(onClick = {navController.navigate("createCompany")}, text = LocalContext.current.getString(R.string.buttonHome2),Modifier.padding(10.dp))
+                    FilledButton(onClick = {navController.navigate("createCompany")}, text = LocalContext.current.getString(R.string.buttonHome2),Modifier.padding(10.dp),GreenWorkFlow, Color.Black)
                     Text(
                         text = LocalContext.current.getString(R.string.lorem_ipsum_small),
                         modifier = Modifier.padding(10.dp),
