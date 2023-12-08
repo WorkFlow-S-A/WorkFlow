@@ -1,5 +1,6 @@
 package com.example.workflow.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +28,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.workflow.App
 import com.example.workflow.R
+import com.example.workflow.adapters.repositories.firebase.CompanyFirebaseRepository
+import com.example.workflow.domain.entities.Email
+import com.example.workflow.domain.entities.Employee
+import com.example.workflow.domain.entities.EmployeeID
+import com.example.workflow.domain.entities.EmployeeName
+import com.example.workflow.domain.entities.EmployeeSurname
+import com.example.workflow.domain.entities.EmployeeWorkHours
+import com.example.workflow.domain.entities.EmployeeWorkedHours
+import com.example.workflow.ports.service.EmployeeService
 import com.example.workflow.ui.customCompose.CustomClickableText
 import com.example.workflow.ui.customCompose.EmailTextField
 import com.example.workflow.ui.customCompose.FilledButton
@@ -35,6 +46,13 @@ import com.example.workflow.ui.customCompose.PasswordTextField
 import com.example.workflow.ui.customCompose.UserTextField
 import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import java.util.UUID
 
 @Composable
 fun CreateCompanyCompose(navController: NavController) {
@@ -80,10 +98,25 @@ fun CreateCompanyCompose(navController: NavController) {
                     EmailTextField(text = "Correo electrónico",userEmail, onEmailValueChange = { userEmail = it})
                     PasswordTextField(text="Contraseña",userPassword, onPasswordValueChange = {userPassword = it})
                     PasswordTextField(text="Repetir contraseña",userPasswordCheck, onPasswordValueChange = {userPasswordCheck = it})
-                    FilledButton(onClick = { navController.navigate("controlEmployees") }, text = "Crear empresa", modifier = Modifier
+                    FilledButton(onClick = {
+                        if(userPassword == userPasswordCheck){
+                            GlobalScope.launch(Dispatchers.IO) {
+
+                                CompanyFirebaseRepository.createCompany(userEmail, userPassword, companyName)
+
+                            }
+                        }
+
+                    }, text = "Crear empresa", modifier = Modifier
                         .padding(top = 10.dp)
                         .fillMaxWidth(), GreenWorkFlow, Color.Black)
-                    CustomClickableText(text = "¿Ya tienes o perteneces a una empresa?", modifier = Modifier.align(Alignment.Start).padding(top=10.dp), onClick = {navController.navigate("logIn")})
+
+                    CustomClickableText(text = "¿Ya tienes o perteneces a una empresa?", modifier = Modifier.align(Alignment.Start).padding(top=10.dp), onClick = {
+                        GlobalScope.launch(Dispatchers.IO) {
+
+                            mySuspendFunction()
+
+                        }})
 
                 }
                 Text(text = LocalContext.current.getString(R.string.version_app), style = TextStyle(Color.Gray))
@@ -101,3 +134,25 @@ fun CreateCompanyCompose(navController: NavController) {
 fun CreateCompanyPreview(){
     CreateCompanyCompose(navController = rememberNavController())
 }
+
+private suspend fun mySuspendFunction() {
+    var employee : Employee
+    try {
+        employee = Employee(
+            employeeId = EmployeeID("12345678"),
+            name = EmployeeName("Pedro"),
+            surname = EmployeeSurname("Sanchez"),
+            workHours = EmployeeWorkHours(1),
+            workedHours = EmployeeWorkedHours(1),
+            email = Email("pedro.sanchez@gmail.com")
+        )
+        CompanyFirebaseRepository.addEmployeeToCompany(employee)
+
+    }catch (e : Exception){
+        if(e.cause != null){
+            e.cause!!.printStackTrace()
+        }
+        Log.d("ERROOOOOR",e.toString())
+    }
+}
+

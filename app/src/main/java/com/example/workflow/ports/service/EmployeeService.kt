@@ -10,14 +10,14 @@ import com.example.workflow.utils.InternetChecker
 import com.example.workflow.domain.entities.Employee
 import com.example.workflow.ports.repository.EmployeeLocalRepository
 import com.example.workflow.ports.repository.EmployeeRemoteRepository
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.firstOrNull
 
 import java.util.UUID
 
-class EmployeeService() : Service(){
+class EmployeeService : Service(){
     private val internetChecker : InternetChecker = App.instance.internetChecker
 
     companion object{
@@ -46,43 +46,37 @@ class EmployeeService() : Service(){
      * */
     suspend fun saveEmployee(employee: Employee){
         if(internetChecker.checkConnectivity()){
-            val password = employee.name.name + "_" + employee.employeeId.id
-            val uid = App.instance.firebaseAuthentication.createUser(employee.email.email, password)
 
-            if(uid != null){
-                employee.id = uid
-                employeeRemoteRepository?.insertEmployee(employee = employee)
-            }else{
-                Log.w("Employee operation", "User did not add")
-            }
+            employeeRemoteRepository?.insertEmployee(employee = employee)
 
-           // employeeLocalRepository?.saveEmployee(employee = employee, false)
+            employeeLocalRepository?.saveEmployee(employee = employee, false)
         }else{
             employeeLocalRepository?.saveEmployee(employee = employee, true)
         }
     }
 
     suspend fun getEmployee(id : UUID) : Employee{
-        /*var employeeStream : Flow<Employee?>? = employeeLocalRepository?.getEmployee(id = id)
-        if (employeeStream != null) {
-            if(employeeStream.count() > 0){
-                return employeeStream.first()?: throw InternalError("There was a problem while the object was being found.")
-            }
+        val employeeStream : Flow<Employee?>? = employeeLocalRepository?.getEmployee(id = id)
+        val employee = employeeStream?.firstOrNull()
+        if (employee != null) {
+            Log.d("pasaber", "Hemos llegado")
+            return employee
         }
 
-        if (employeeStream != null) {*/
+
+        if (employeeStream != null) {
             var employeeStream = employeeRemoteRepository?.getByIdStream(id)
             if(employeeStream?.count()!! > 0) {
                 val employee : Employee? = employeeStream.first()
                 if(employee != null){
-                    //employeeLocalRepository?.saveEmployee(employee = employee, false)
+                    employeeLocalRepository?.saveEmployee(employee = employee, false)
                     return employee
                 } else throw InternalError("There was a problem while the object was being found.")
 
             } else{
                 throw IllegalArgumentException("Not found")
             }
-       // }
+        }
 
         throw InternalError("No Database found")
     }

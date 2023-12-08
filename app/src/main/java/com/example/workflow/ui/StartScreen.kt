@@ -123,7 +123,7 @@ fun StartComposePreview(){
 private suspend fun mySuspendFunction(employeeService: EmployeeService) {
     var employee : Employee
     try {
-        val employeeNew = employeeService.getEmployee(UUID.fromString("baf4fa96-b9b8-4721-a2e5-38ef298a0b05"))
+        /*val employeeNew = employeeService.getEmployee(UUID.fromString("baf4fa96-b9b8-4721-a2e5-38ef298a0b05"))
         employee = employeeNew
         employee = Employee(
             employeeId = EmployeeID("12345678"),
@@ -133,6 +133,11 @@ private suspend fun mySuspendFunction(employeeService: EmployeeService) {
             workedHours = EmployeeWorkedHours(1),
             email = Email("pedro.sanchez@gmail.com")
         )
+        Log.d("employee", "El valor de employee es: $employee")
+        employeeService.saveEmployee(employee)
+        val employeeNew = employeeService.getEmployee(UUID.fromString("ab800a5f-daca-44fc-8f51-4e5914fb8928"))
+        Log.d("employeeNew", "El valor de employeeNew es: $employeeNew")*/
+
 
     }catch (e : Exception){
         if(e.cause != null){

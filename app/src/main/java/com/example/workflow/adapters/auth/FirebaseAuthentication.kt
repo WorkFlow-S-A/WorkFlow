@@ -4,20 +4,14 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
-import com.example.workflow.App
-import com.example.workflow.ports.service.EmployeeService
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.tasks.await
 
 class FirebaseAuthentication : Service(){
     private lateinit var auth: FirebaseAuth
-    private lateinit var userID : String
-
-
     override fun onCreate() {
         super.onCreate()
         auth = Firebase.auth
@@ -27,8 +21,9 @@ class FirebaseAuthentication : Service(){
     /**
      * @return UID of new user
      */
-    suspend fun createUser(email:String , password:String) : String?{
+    private suspend fun createAccount(email:String, password:String) : String?{
         var newUserUid : String? = null
+
         auth.createUserWithEmailAndPassword(email ,password)
             .addOnCompleteListener{ task ->
                 if(task.isSuccessful){
@@ -38,13 +33,31 @@ class FirebaseAuthentication : Service(){
                 }else{
                     Log.w("Firebase AUTH", "createUserWithEmail:failure",task.exception)
                 }
-            }.await()
+            }.addOnFailureListener {
+                Log.e("Firebase AUTH",it.message?:"Internal Error")
+            }
+            .await()
+
 
         //TODO : sendEmailVerification
+
 
         return newUserUid
 
     }
+
+    suspend fun createCompanyAccount(email:String, password:String) : String?{
+        return createAccount(email , password)
+    }
+
+    suspend fun createEmployeeAccount(email:String, password:String) : String?{
+        val currentUser : FirebaseUser = auth.currentUser!!
+        val uid = createAccount(email, password)
+        currentUser.uid
+        auth.updateCurrentUser(currentUser)
+        return uid
+    }
+
 
 
 

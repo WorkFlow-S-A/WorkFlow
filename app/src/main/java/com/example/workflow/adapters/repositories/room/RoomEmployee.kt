@@ -11,7 +11,7 @@ import java.util.UUID
 
 @Entity(tableName = "employees")
 data class RoomEmployee(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
     val id: String,
     val employeeId: String,
     val name: String,

@@ -6,7 +6,7 @@ import java.util.UUID
 
 @Entity(tableName = "tasks")
 data class RoomTask(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
     val id: UUID,
     val name: String,
     val description: String,
