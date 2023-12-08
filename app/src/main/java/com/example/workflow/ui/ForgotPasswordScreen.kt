@@ -62,7 +62,7 @@ fun ForgotPasswordCompose(navController: NavController) {
                     EmailTextField("Correo Electrónico",userEmail, onEmailValueChange = {userEmail = it})
                     FilledButton(onClick = { /*TODO*/ }, text = "MANDAR EMAIL", modifier = Modifier
                         .padding(top = 10.dp)
-                        .fillMaxWidth())
+                        .fillMaxWidth(), Color.White,Color.Red)
                     CustomClickableText(text = "Volver a iniciar sesión", modifier = Modifier.align(Alignment.Start).padding(top=10.dp),{navController.navigate("logIn")})
 
 

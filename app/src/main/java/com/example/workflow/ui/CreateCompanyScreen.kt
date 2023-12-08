@@ -33,6 +33,7 @@ import com.example.workflow.ui.customCompose.EmailTextField
 import com.example.workflow.ui.customCompose.FilledButton
 import com.example.workflow.ui.customCompose.PasswordTextField
 import com.example.workflow.ui.customCompose.UserTextField
+import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
 
 @Composable
@@ -79,9 +80,9 @@ fun CreateCompanyCompose(navController: NavController) {
                     EmailTextField(text = "Correo electrónico",userEmail, onEmailValueChange = { userEmail = it})
                     PasswordTextField(text="Contraseña",userPassword, onPasswordValueChange = {userPassword = it})
                     PasswordTextField(text="Repetir contraseña",userPasswordCheck, onPasswordValueChange = {userPasswordCheck = it})
-                    FilledButton(onClick = { /*TODO*/ }, text = "Crear empresa", modifier = Modifier
+                    FilledButton(onClick = { navController.navigate("controlEmployees") }, text = "Crear empresa", modifier = Modifier
                         .padding(top = 10.dp)
-                        .fillMaxWidth())
+                        .fillMaxWidth(), GreenWorkFlow, Color.Black)
                     CustomClickableText(text = "¿Ya tienes o perteneces a una empresa?", modifier = Modifier.align(Alignment.Start).padding(top=10.dp), onClick = {navController.navigate("logIn")})
 
                 }
