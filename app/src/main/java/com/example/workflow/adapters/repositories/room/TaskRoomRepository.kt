@@ -29,6 +29,10 @@ class TaskRoomRepository(private val taskDao: TaskRoomDao): TaskLocalRepository 
         return roomDesynchronizedTasks.map { it.toTask() }
     }
 
+    override fun deleteAllTasks() {
+        taskDao.deleteAllTasks()
+    }
+
     override suspend fun saveAll(tasks: List<Task>) {
         val roomTasks = tasks.map { it.toTaskRoomEntity(false) }
         taskDao.insertAll(roomTasks)

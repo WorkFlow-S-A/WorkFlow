@@ -1,9 +1,13 @@
 package com.example.workflow.ports.service
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import com.example.workflow.App
 import com.example.workflow.domain.entities.Task
+import com.example.workflow.ports.repository.EmployeeLocalRepository
+import com.example.workflow.ports.repository.EmployeeRemoteRepository
 import com.example.workflow.ports.repository.TaskLocalRepository
 import com.example.workflow.ports.repository.TaskRemoteRepository
 import com.example.workflow.utils.InternetChecker
@@ -14,78 +18,99 @@ import kotlinx.coroutines.flow.firstOrNull
 import java.lang.IllegalArgumentException
 import java.util.UUID
 
-class TaskService(private val localRepository: TaskLocalRepository,
-                  private val remoteRepository: TaskRemoteRepository
-): Service() {
+class TaskService: Service() {
+
+    private val internetChecker : InternetChecker = App.instance.internetChecker
+
+    companion object {
+
+        private var instance : TaskService? = null
+        var taskRemoteRepository: TaskRemoteRepository? = null
+        var taskLocalRepository: TaskLocalRepository? = null
+        private var thisContext : Context? = null
+        fun getService(remoteRepository: TaskRemoteRepository? = null,
+                       localRepository: TaskLocalRepository? = null,
+                       context: Context? = null ) : TaskService{
+            if(instance == null) {
+                thisContext = context
+                taskRemoteRepository = remoteRepository
+                taskLocalRepository = localRepository
+                return TaskService()
+            }
+
+            return instance!!
+
+        }
+    }
 
     suspend fun getTaskById(id: UUID): Task {
-        var taskStream: Flow<Task?> = localRepository.getTaskByIdStream(id = id)
-        var task = taskStream.firstOrNull()
+        var taskStream: Flow<Task?>? = taskLocalRepository?.getTaskByIdStream(id = id)
+        var task = taskStream?.firstOrNull()
         if (task != null) {
             return task
         }
 
-        taskStream = remoteRepository.getTaskByIdStream(id = id)
-        if (taskStream.count() > 0) {
-            val task: Task? = taskStream.first()
-            if (task != null) {
-                localRepository.insertTask(task, false)
-                return task
-            } else
-                throw InternalError("There was a problem while the object was being found.")
+        taskStream = taskRemoteRepository?.getTaskByIdStream(id = id)
+        task = taskStream?.firstOrNull()
+        if (task != null) {
+            taskLocalRepository?.insertTask(task, false)
+            return task
         } else
-            throw IllegalArgumentException("Not found")
+            throw InternalError("There was a problem while the object was being found.")
     }
 
-    suspend fun getAllTasks(): List<Task> {
-        return if (InternetChecker.getInstance(null).checkConnectivity()) {
+    suspend fun getAllTasks(): List<Task>? {
+        return if (internetChecker.checkConnectivity()) {
             try {
-                val tasksFromRemote = remoteRepository.getAllTasksStream().first()
-                localRepository.saveAll(tasksFromRemote)
+                val tasksFromRemote = taskRemoteRepository?.getAllTasksStream()?.firstOrNull()
+                if (tasksFromRemote != null) {
+                    taskLocalRepository?.deleteAllTasks()
+                    taskLocalRepository?.saveAll(tasksFromRemote)
+                }
                 tasksFromRemote
             } catch (e: Exception) {
-                localRepository.getAllTasksStream().first() // TODO: Cambiar por el error correspondiente de Firebase
+                taskLocalRepository?.getAllTasksStream()?.first() // TODO: Cambiar por el error correspondiente de Firebase
             }
         } else {
-            localRepository.getAllTasksStream().first()
+            taskLocalRepository?.getAllTasksStream()?.firstOrNull()
         }
     }
     suspend fun createTask(task: Task) {
-        if (InternetChecker.getInstance(null).checkConnectivity()) {
+        if (internetChecker.checkConnectivity()) {
             try {
-                remoteRepository.insertTask(task)
-                localRepository.insertTask(task, false)
+                taskRemoteRepository?.insertTask(task)
+                taskLocalRepository?.insertTask(task, false)
             } catch (e: Exception) {
-                localRepository.insertTask(task, true) // TODO: Cambiar por el error correspondiente de Firebase
+                taskLocalRepository?.insertTask(task, true) // TODO: Cambiar por el error correspondiente de Firebase
             }
         } else {
-            localRepository.insertTask(task, true)
+            taskLocalRepository?.insertTask(task, true)
         }
     }
 
-    suspend fun deleteTask(task: Task) {
-        if (InternetChecker.getInstance(null).checkConnectivity()) {
+    suspend fun deleteTask(task: Task) {    // TODO: Realizar la lógica de sincronización para que cuando se elimine una tarea del local, al recuperar internet, también se elimine del remoto
+        if (internetChecker.checkConnectivity()) {
             try {
-                remoteRepository.deleteTask(task)
-                localRepository.deleteTask(task)
+                taskRemoteRepository?.deleteTask(task)
+                taskLocalRepository?.deleteTask(task)
             } catch (e: Exception) {
-                localRepository.deleteTask(task) // TODO: Cambiar por el error correspondiente de Firebase
+                taskLocalRepository?.deleteTask(task) // TODO: Cambiar por el error correspondiente de Firebase
             }
         } else {
-            localRepository.deleteTask(task)
+            taskLocalRepository?.deleteTask(task)
         }
     }
 
     suspend fun updateTask(task: Task) {
-        if (InternetChecker.getInstance(null).checkConnectivity()) {
+        if (internetChecker.checkConnectivity()) {
             try {
-                remoteRepository.updateTask(task)
-                localRepository.updateTask(task, false)
+                taskRemoteRepository?.updateTask(task)
+                taskLocalRepository?.updateTask(task, false)
             } catch (e: Exception) {
-                localRepository.updateTask(task, true) // TODO: Cambiar por el error correspondiente de Firebase
+                taskLocalRepository?.updateTask(task, true) // TODO: Cambiar por el error correspondiente de Firebase
             }
         } else {
-            localRepository.updateTask(task, true)
+            taskLocalRepository?.updateTask(task, true)
         }
     }
 

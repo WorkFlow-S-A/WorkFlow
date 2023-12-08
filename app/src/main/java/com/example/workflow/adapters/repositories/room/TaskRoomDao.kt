@@ -30,4 +30,7 @@ interface TaskRoomDao {
 
     @Query("SELECT * FROM tasks WHERE needSync = 1")
     fun getAllDesynchronizedTasks(): List<RoomTask>
+
+    @Query("DELETE FROM tasks")
+    fun deleteAllTasks()
 }
