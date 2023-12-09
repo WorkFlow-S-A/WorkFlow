@@ -8,7 +8,7 @@ import java.util.UUID
 
 interface EmployeeLocalRepository {
 
-    suspend fun getEmployee(id : UUID) : Flow<Employee?>
+    suspend fun getEmployee(id : String) : Flow<Employee?>
 
     suspend fun saveEmployee(employee: Employee, needSync : Boolean)
 

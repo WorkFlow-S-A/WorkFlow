@@ -29,34 +29,20 @@ class EmployeeFirebaseRepository : EmployeeRemoteRepository{
 
     }
 
-    override suspend fun getAllEmployeesStream(): Flow<List<Employee>> = callbackFlow {
-        val subscription = db.document(CompanyFirebaseRepository.getCurrentCompanyId())
-            .collection("Employees")
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    val employees = snapshot?.documents?.map {
-                        it.toObject(EmployeeDTO::class.java)
-                    } ?: emptyList()
+    override suspend fun getAllEmployeesStream(): Flow<List<Employee>> = flow {
+        val querySnapshot = db.document(CompanyFirebaseRepository.getCurrentCompanyId())
+            .collection("Employees").get().await()
+        val dtoList : List<EmployeeDTO> = querySnapshot.toObjects(EmployeeDTO::class.java)
 
-                    trySend(employees.filterNotNull().map {
-                        EmployeeDTO.toEmployee(it)
-                    })
-
-                    Log.e("NEW EMPLOYEE",employees.toString())
-
-
-
-                }
-            }
-        awaitClose{
-            subscription.remove()
-        }
+        emit(dtoList.map {
+            EmployeeDTO.toEmployee(it)
+        })
 
     }
 
-    override suspend fun getByIdStream(id: UUID): Flow<Employee?> = flow{
+    override suspend fun getByIdStream(id: String): Flow<Employee?> = flow{
         val data : DocumentSnapshot? =  db.document(CompanyFirebaseRepository.getCurrentCompanyId())
-            .collection("Employees").document(id.toString()).get().await()
+            .collection("Employees").document(id).get().await()
         if(data != null){
             val employeeDTO : EmployeeDTO? = data.toObject(EmployeeDTO :: class.java)
             if(employeeDTO == null){

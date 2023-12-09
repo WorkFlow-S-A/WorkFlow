@@ -23,10 +23,10 @@ class EmployeeService : Service(){
     companion object{
 
         private var instance : EmployeeService? = null
-        var employeeRemoteRepository: EmployeeRemoteRepository? = null
-        var employeeLocalRepository: EmployeeLocalRepository? = null
-        fun getService(remoteRepository: EmployeeRemoteRepository? = null,
-                       localRepository: EmployeeLocalRepository? = null) : EmployeeService{
+        lateinit var employeeRemoteRepository: EmployeeRemoteRepository
+        lateinit var employeeLocalRepository: EmployeeLocalRepository
+        fun getService(remoteRepository: EmployeeRemoteRepository,
+                       localRepository: EmployeeLocalRepository) : EmployeeService{
             if(instance == null) {
                 employeeRemoteRepository = remoteRepository
                 employeeLocalRepository = localRepository
@@ -44,16 +44,16 @@ class EmployeeService : Service(){
     suspend fun saveEmployee(employee: Employee){
         if(internetChecker.checkConnectivity()){
 
-            employeeRemoteRepository?.insertEmployee(employee = employee)
+            employeeRemoteRepository.insertEmployee(employee = employee)
 
-            employeeLocalRepository?.saveEmployee(employee = employee, false)
+            employeeLocalRepository.saveEmployee(employee = employee, false)
         }else{
-            employeeLocalRepository?.saveEmployee(employee = employee, true)
+            employeeLocalRepository.saveEmployee(employee = employee, true)
         }
     }
 
-    suspend fun getEmployee(id : UUID) : Employee{
-        val employeeStream : Flow<Employee?>? = employeeLocalRepository?.getEmployee(id = id)
+    suspend fun getEmployee(id : String) : Employee{
+        val employeeStream : Flow<Employee?>? = employeeLocalRepository.getEmployee(id = id)
         val employee = employeeStream?.firstOrNull()
         if (employee != null) {
             Log.d("pasaber", "Hemos llegado")
@@ -62,8 +62,8 @@ class EmployeeService : Service(){
 
 
         if (employeeStream != null) {
-            var employeeStream = employeeRemoteRepository?.getByIdStream(id)
-            if(employeeStream?.count()!! > 0) {
+            var employeeStream = employeeRemoteRepository.getByIdStream(id)
+            if(employeeStream.count() > 0) {
                 val employee : Employee? = employeeStream.first()
                 if(employee != null){
                     employeeLocalRepository?.saveEmployee(employee = employee, false)
@@ -81,9 +81,9 @@ class EmployeeService : Service(){
     suspend fun getAllEmployees() : List<Employee>{
         //TODO : Try the listener of remote DB to take data from Local DB directly
 
-        var employees : List<Employee> = employeeRemoteRepository!!.getAllEmployeesStream().first()
+        var employees : List<Employee> = employeeRemoteRepository.getAllEmployeesStream().first()
 
-        employeeLocalRepository?.saveAll(employees)
+        employeeLocalRepository.saveAll(employees)
 
         return employees
     }

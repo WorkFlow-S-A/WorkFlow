@@ -1,6 +1,5 @@
 package com.example.workflow.ui
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,16 +12,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,19 +33,41 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.workflow.App
 import com.example.workflow.R
-import com.example.workflow.ui.customCompose.BottomBar
 import com.example.workflow.ui.customCompose.FilledButton
 import com.example.workflow.ui.customCompose.TextFieldCustom
-import com.example.workflow.ui.customCompose.TopBar
 import com.example.workflow.ui.customCompose.TopBarControl
 import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun ControlProfileCompose(navController: NavController) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val arguments = navBackStackEntry?.arguments
+    val employeeId = arguments?.getString("employeeId")
+
+    Log.d("EMPLOYEE ID", employeeId ?: "null")
+
+    var email by remember { mutableStateOf("jpereiro1@gmail.com") }
+    var name by remember { mutableStateOf("User name") }
+    var uid by remember { mutableStateOf("12345678X") }
+    var workHours by remember { mutableIntStateOf(35) }
+    var workedHours by remember { mutableIntStateOf(35) }
+    if(employeeId != null){
+        LaunchedEffect(Unit) {
+            val employee = App.instance.employeeService.getEmployee(employeeId)
+            email = employee.email.email
+            name = employee.name.name
+            uid = employee.employeeId.id
+            workHours = employee.workHours.workHours
+            workedHours = employee.workedHours.workedHours
+        }
+    }
+
 
 
     WorkFlowTheme {
@@ -74,7 +95,7 @@ fun ControlProfileCompose(navController: NavController) {
                             contentDescription = null
                         )
 
-                        Text("User Name",
+                        Text(name,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -88,9 +109,9 @@ fun ControlProfileCompose(navController: NavController) {
                         verticalArrangement = Arrangement.SpaceBetween,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
-                        Column(){
-                            TextFieldCustom("Email","jpereiro1@gmail.com")
-                            TextFieldCustom("DNI","12345678X")
+                        Column {
+                            TextFieldCustom( "Email",email)
+                            TextFieldCustom("DNI",uid)
                             TextFieldCustom("Teléfono","+34 612 612 612")
                         }
 
@@ -106,7 +127,7 @@ fun ControlProfileCompose(navController: NavController) {
                                     Alignment.Center
                                 ){
                                     //Poner las horas
-                                    Text("35h",modifier = Modifier
+                                    Text(workHours.toString() +"h",modifier = Modifier
                                         .clip(RoundedCornerShape(10.dp))
                                         .padding(15.dp))
                                 }
@@ -121,7 +142,7 @@ fun ControlProfileCompose(navController: NavController) {
                                     Alignment.Center
                                 ){
                                     //Poner las horas
-                                    Text("35h",modifier = Modifier
+                                    Text(workedHours.toString() + "h",modifier = Modifier
                                         .padding(15.dp)
                                         .clip(RoundedCornerShape(50)))
                                 }
@@ -129,7 +150,7 @@ fun ControlProfileCompose(navController: NavController) {
                         }
 
 
-                        Column(){
+                        Column {
                             FilledButton(
                                 onClick = { /*TODO*/ },
                                 text = "Tareas",

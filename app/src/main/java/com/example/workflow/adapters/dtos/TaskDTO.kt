@@ -1,5 +1,6 @@
 package com.example.workflow.adapters.dtos
 
+import android.util.Log
 import com.example.workflow.domain.entities.EndHour
 import com.example.workflow.domain.entities.StartHour
 import com.example.workflow.domain.entities.Task
@@ -33,14 +34,20 @@ class TaskDTO {
 
         fun toTask(taskDTO: TaskDTO) : Task{
             val format = SimpleDateFormat("dd-MM-yyyy HH:mm")
-            return Task(
-                id = UUID.fromString(taskDTO.id),
-                name = TaskName(taskDTO.name),
-                description = TaskDescription(taskDTO.description),
-                startHour = StartHour(format.parse(taskDTO.startHour)),
-                endHour = EndHour(format.parse(taskDTO.endHour)),
-                done = taskDTO.done
-            )
+            try{
+                return Task(
+                    id = UUID.fromString(taskDTO.id),
+                    name = TaskName(taskDTO.name),
+                    description = TaskDescription(taskDTO.description),
+                    startHour = StartHour(format.parse(taskDTO.startHour)!!),
+                    endHour = EndHour(format.parse(taskDTO.endHour)!!),
+                    done = taskDTO.done
+                )
+            }catch (e : Exception){
+                Log.e("TaskDTO ERROR", e.cause?.toString() ?:"Converter error")
+                throw e
+            }
+
 
         }
     }

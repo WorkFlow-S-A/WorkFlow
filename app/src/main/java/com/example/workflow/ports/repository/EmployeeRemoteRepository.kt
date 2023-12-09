@@ -11,7 +11,7 @@ interface EmployeeRemoteRepository {
 
     suspend fun getAllEmployeesStream() : Flow<List<Employee>>
 
-    suspend fun getByIdStream(id: UUID) : Flow<Employee?>
+    suspend fun getByIdStream(id: String) : Flow<Employee?>
 
     suspend fun deleteEmployee(employee : Employee)
 

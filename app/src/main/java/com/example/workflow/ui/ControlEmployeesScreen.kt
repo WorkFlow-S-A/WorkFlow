@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -42,20 +43,23 @@ import com.example.workflow.ui.customCompose.TopBarControl
 import com.example.workflow.ui.theme.BlueWorkFlow
 import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ControlEmployeesCompose(navController: NavController){
     var employees by remember { mutableStateOf(emptyList<Employee>()) }
-    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
-        Log.d("ENTRO EN LA CORR" , "")
-        employees = App.instance.employeeService.getAllEmployees()
+        try {
+            employees = App.instance.employeeService.getAllEmployees()
+        } catch (e: Exception) {
+            Log.e("Error al obtener empleados", e.toString())
+        }
+
     }
-
-
 
     WorkFlowTheme {
         Scaffold(
@@ -75,13 +79,13 @@ fun ControlEmployeesCompose(navController: NavController){
                         .padding(10.dp, 10.dp, 10.dp, 10.dp)
                         .fillMaxSize()){
 
-                        items(employees.size) {
-                            employees.forEach{
+
+                            items(employees.size) { index ->
                                 EmployeeRow(
-                                    it,
+                                    employees[index],
                                     navController
                                 )
-                            }
+
                         }
 
                     }
@@ -100,8 +104,8 @@ fun ControlEmployeesCompose(navController: NavController){
 }
 
 @Composable
-fun EmployeeRow(employee : Employee,navController: NavController){
-
+fun EmployeeRow(employee : Employee, navController: NavController){
+    //Log.d("Employees", employee?.id)
 
     Row(modifier = Modifier
         .padding(bottom = 8.dp)
@@ -120,7 +124,7 @@ fun EmployeeRow(employee : Employee,navController: NavController){
             Text(employee.name.name, color = Color.White)
         }
 
-        IconButton(onClick = { navController.navigate("controlEmployeesProfile"+"/123") }){
+        IconButton(onClick = { navController.navigate("controlEmployeesProfile"+"/" + employee.id) }){
             Icon(tint = Color.White, imageVector = Icons.Default.ArrowForwardIos, contentDescription = "Editar empleado")
         }
 
