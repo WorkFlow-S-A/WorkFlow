@@ -116,7 +116,9 @@ fun CreateCompanyCompose(navController: NavController) {
 
                             mySuspendFunction()
 
-                        }})
+                        }
+                        navController.navigate("logIn")
+                    })
 
                 }
                 Text(text = LocalContext.current.getString(R.string.version_app), style = TextStyle(Color.Gray))

@@ -10,6 +10,8 @@
     <string name="controlEmployees">Control Employees</string>
     <string name="controlEmployeesProfile">Control Employees Profile</string>
     <string name="controlAddEmployee">Add Employee</string>
+    <string name="controlTaskEmployee">Control Task Employee</string>
+    <string name="controlCreateTask">Control Create Task</string>
     <string name="buttonHome1">Ya tengo una Empresa</string>
     <string name="buttonHome2">Nueva Empresa</string>
     <string name="version_app">Version 1.0</string>

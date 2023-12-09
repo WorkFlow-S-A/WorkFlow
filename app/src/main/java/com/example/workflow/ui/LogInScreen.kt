@@ -48,6 +48,7 @@ import com.example.workflow.ui.customCompose.FilledButton
 import com.example.workflow.ui.customCompose.PasswordTextField
 import com.example.workflow.ui.customCompose.UserTextField
 import com.example.workflow.ui.theme.BlueWorkFlow
+import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.jua
 
 @Composable
@@ -95,7 +96,7 @@ fun LogInCompose(navController: NavController) {
                         .fillMaxWidth()
                 ){
                     val context = LocalContext.current
-                    UserTextField(text = "Usuario",userName, onTextValueChange = { userName = it})
+                    UserTextField(text = "Email",userName, onTextValueChange = { userName = it})
                     PasswordTextField(text="Contraseña",userPassword, onPasswordValueChange = {userPassword = it})
                     FilledButton(onClick =
                         {   Toast.makeText(context,userName,Toast.LENGTH_LONG).show()
@@ -103,7 +104,7 @@ fun LogInCompose(navController: NavController) {
                         }, text = "ENTRAR",
                         Modifier
                             .padding(top = 10.dp)
-                            .fillMaxWidth(),Color.Red,Color.White)
+                            .fillMaxWidth(), GreenWorkFlow,Color.Black)
                     CustomClickableText(text = "¿Olvidaste la contraseña?", modifier = Modifier.align(Alignment.Start).padding(top=10.dp), onClick = {navController.navigate("forgotPassword")})
                     CustomClickableText(text = "Crear una empresa", modifier = Modifier.align(Alignment.Start).padding(top=10.dp), onClick = {navController.navigate("createCompany")})
 
