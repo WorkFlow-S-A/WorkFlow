@@ -17,12 +17,9 @@ class App : Application() {
     val employeeService by lazy {
         EmployeeService.getService(
             EmployeeFirebaseRepository(),
-            EmployeeRoomRepository(localDatabase.employeeDao()),
-            context = this
+            EmployeeRoomRepository(localDatabase.employeeDao())
         )
     }
-
-
 
     val taskService by lazy{
         TaskService.getService(

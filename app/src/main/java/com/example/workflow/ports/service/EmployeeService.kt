@@ -26,8 +26,7 @@ class EmployeeService : Service(){
         var employeeRemoteRepository: EmployeeRemoteRepository? = null
         var employeeLocalRepository: EmployeeLocalRepository? = null
         fun getService(remoteRepository: EmployeeRemoteRepository? = null,
-                       localRepository: EmployeeLocalRepository? = null,
-                       context: Context? = null ) : EmployeeService{
+                       localRepository: EmployeeLocalRepository? = null) : EmployeeService{
             if(instance == null) {
                 employeeRemoteRepository = remoteRepository
                 employeeLocalRepository = localRepository

@@ -3,8 +3,8 @@ package com.example.workflow.adapters.repositories.firebase
 import android.util.Log
 import com.example.workflow.App
 import com.example.workflow.domain.entities.Employee
-import com.example.workflow.ports.service.EmployeeService
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
 
 class CompanyFirebaseRepository {
@@ -35,6 +35,7 @@ class CompanyFirebaseRepository {
             if(uid != null){
                 employee.id = uid
                 App.instance.employeeService.saveEmployee(employee)
+                employeeMappedDb.document(employee.id).set(mapOf("company" to getCurrentCompanyId()))
             }else{
                 Log.w("Employee operation", "User did not add")
             }
@@ -51,6 +52,29 @@ class CompanyFirebaseRepository {
         fun getCurrentCompanyId() : String{
             updateCompanyId()
             return currentCompanyId
+        }
+
+        suspend fun findCompany(employeeId : String) : Boolean{
+            var isAdmin : Boolean = false
+            employeeMappedDb.document(employeeId).get()
+                .addOnSuccessListener{ document ->
+                    Log.d("FireBase Auth", "Checking user")
+                    if(document.exists()){
+                        class Data(val company : String)
+                        currentCompanyId = document.toObject(Data::class.java)?.company ?: ""
+
+                    }else{
+                        currentCompanyId = employeeId
+                        isAdmin = true
+                    }
+
+                }
+                .addOnFailureListener {
+
+                    Log.w("Firebase AUTH", it.cause)
+                }.await()
+            isAdmin
+            return isAdmin
         }
 
     }

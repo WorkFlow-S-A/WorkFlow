@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,16 +43,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.workflow.App
 import com.example.workflow.R
+import com.example.workflow.adapters.repositories.firebase.CompanyFirebaseRepository
 import com.example.workflow.ui.customCompose.CustomClickableText
 import com.example.workflow.ui.customCompose.FilledButton
 import com.example.workflow.ui.customCompose.PasswordTextField
 import com.example.workflow.ui.customCompose.UserTextField
 import com.example.workflow.ui.theme.BlueWorkFlow
 import com.example.workflow.ui.theme.jua
+import kotlinx.coroutines.launch
 
 @Composable
 fun LogInCompose(navController: NavController) {
+
+    val coroutineScope = rememberCoroutineScope()
 
     var userName by remember { mutableStateOf("") }
     var userPassword by rememberSaveable { mutableStateOf("") }
@@ -98,8 +104,19 @@ fun LogInCompose(navController: NavController) {
                     UserTextField(text = "Usuario",userName, onTextValueChange = { userName = it})
                     PasswordTextField(text="Contraseña",userPassword, onPasswordValueChange = {userPassword = it})
                     FilledButton(onClick =
-                        {   Toast.makeText(context,userName,Toast.LENGTH_LONG).show()
-                            navController.navigate(WorkFlowScreen.TaskEmployee.name)
+                        {
+
+
+                            coroutineScope.launch{
+                                val uid : String = App.instance.firebaseAuthentication.logIn(userName, userPassword)
+                                if(uid != "" ){
+                                   if(CompanyFirebaseRepository.findCompany(uid)){
+                                       navController.navigate("controlEmployees")
+                                   }
+
+                                    // TODO : AÑADIR PARTE DEL EMPLEADO
+                                }
+                            }
                         }, text = "ENTRAR",
                         Modifier
                             .padding(top = 10.dp)
@@ -119,4 +136,8 @@ fun LogInCompose(navController: NavController) {
 @Composable
 fun LogInPreview(){
     LogInCompose(navController = rememberNavController())
+}
+
+private suspend fun logIn(){
+
 }

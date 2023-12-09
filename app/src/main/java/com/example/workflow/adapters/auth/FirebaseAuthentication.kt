@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import com.example.workflow.adapters.repositories.firebase.CompanyFirebaseRepository
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -58,6 +59,24 @@ class FirebaseAuthentication : Service(){
         return uid
     }
 
+
+    suspend fun logIn(email:String, password:String) : String{
+        var uid :String = ""
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+
+                uid = it.user?.uid ?: ""
+
+            }
+            .addOnFailureListener {
+                Log.w("Firebase AUTH", it.cause?.toString() ?: "")
+
+            }
+            .await()
+
+        uid
+        return uid
+    }
 
 
 

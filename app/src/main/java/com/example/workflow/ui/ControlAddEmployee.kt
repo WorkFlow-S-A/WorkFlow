@@ -1,6 +1,5 @@
 package com.example.workflow.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,21 +29,34 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.workflow.R
-import com.example.workflow.ui.customCompose.CustomClickableText
+import com.example.workflow.adapters.repositories.firebase.CompanyFirebaseRepository
+import com.example.workflow.domain.entities.Email
+import com.example.workflow.domain.entities.Employee
+import com.example.workflow.domain.entities.EmployeeID
+import com.example.workflow.domain.entities.EmployeeName
+import com.example.workflow.domain.entities.EmployeeSurname
+import com.example.workflow.domain.entities.EmployeeWorkHours
 import com.example.workflow.ui.customCompose.EmailTextField
 import com.example.workflow.ui.customCompose.FilledButton
-import com.example.workflow.ui.customCompose.PasswordTextField
 import com.example.workflow.ui.customCompose.TopBarControl
 import com.example.workflow.ui.customCompose.UserTextField
 import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun AddEmployeeCompose(navController: NavController) {
+    val coroutineScope = rememberCoroutineScope()
 
     var userName by remember { mutableStateOf("") }
+    var userSurname by remember { mutableStateOf("Surname") }
     var userDNI by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+
+
+
 
 
     WorkFlowTheme {
@@ -100,7 +112,22 @@ fun AddEmployeeCompose(navController: NavController) {
                                 text = "Correo electrónico",
                                 emailValue = email,
                                 onEmailValueChange = { email = it })
-                            FilledButton(onClick = { }, text = "Crear empleado",
+                            FilledButton(onClick = {
+                                coroutineScope.launch(Dispatchers.IO){
+                                    val employee = Employee(
+                                        name = EmployeeName(userName),
+                                        surname = EmployeeSurname(userSurname),
+                                        employeeId = EmployeeID(userDNI),
+                                        email = Email(email),
+                                        workHours = EmployeeWorkHours(0)
+                                    )
+                                    CompanyFirebaseRepository.addEmployeeToCompany(employee)
+
+                                    withContext(Dispatchers.Main){
+                                        navController.navigate("controlEmployees")
+                                    }
+                                }
+                            }, text = "Crear empleado",
                                 Modifier
                                     .padding(top = 10.dp)
                                     .fillMaxWidth(), GreenWorkFlow, Color.Black)
