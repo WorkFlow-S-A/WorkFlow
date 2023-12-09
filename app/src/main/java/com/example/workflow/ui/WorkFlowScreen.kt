@@ -33,7 +33,9 @@ enum class WorkFlowScreen(@StringRes val title:Int){
     ScheduleControlEmployee(title = R.string.scheduleControlEmployee),
     ControlEmployees(title = R.string.controlEmployees),
     ControlEmployeesProfile(title = R.string.controlEmployeesProfile),
-    ControlAddEmployee(title = R.string.controlAddEmployee)
+    ControlAddEmployee(title = R.string.controlAddEmployee),
+    ControlTaskEmployee(title = R.string.controlTaskEmployee),
+    ControlCreateTask(title = R.string.controlCreateTask)
 }
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -88,6 +90,18 @@ fun WorkFlowApp(){
             arguments = listOf(navArgument("employeeId"){type = NavType.StringType})
         ){
             ControlProfileCompose(navController = navController)
+        }
+
+        composable(
+            route = WorkFlowScreen.ControlTaskEmployee.name+"/{employeeId}",
+            arguments = listOf(
+                navArgument("employeeId"){type = NavType.StringType})
+        ){
+            ControlProfileCompose(navController = navController)
+        }
+
+        composable(route = WorkFlowScreen.ControlCreateTask.name){
+            ControlCreateTaskCompose(navController = navController)
         }
         
         

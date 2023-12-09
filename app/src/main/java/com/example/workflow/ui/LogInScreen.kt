@@ -36,6 +36,7 @@ import com.example.workflow.ui.customCompose.FilledButton
 import com.example.workflow.ui.customCompose.PasswordTextField
 import com.example.workflow.ui.customCompose.UserTextField
 import com.example.workflow.ui.theme.WorkFlowTheme
+import com.example.workflow.ui.theme.GreenWorkFlow
 import kotlinx.coroutines.launch
 
 @Composable
@@ -83,7 +84,7 @@ fun LogInCompose(navController: NavController) {
                         .padding(25.dp)
                         .fillMaxWidth()
                 ){
-                    UserTextField(text = "Usuario",userName, onTextValueChange = { userName = it})
+                    UserTextField(text = "Email",userName, onTextValueChange = { userName = it})
                     PasswordTextField(text="Contraseña",userPassword, onPasswordValueChange = {userPassword = it})
 
                     FilledButton(onClick =
