@@ -8,6 +8,7 @@ interface TaskLocalRepository {
     fun getTaskByIdStream(id: UUID): Flow<Task?>
     fun getAllTasksStream(): Flow<List<Task>>
     fun getAllDesynchronizedTasks(): List<Task>
+    fun deleteAllTasks()
     suspend fun saveAll(tasks: List<Task>)
     suspend fun insertTask(task: Task, needSync: Boolean)
     suspend fun deleteTask(task: Task)
