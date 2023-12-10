@@ -2,8 +2,10 @@ package com.example.workflow.ui
 
 import android.os.Build
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
+import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,9 +38,10 @@ enum class WorkFlowScreen(@StringRes val title:Int){
     ControlAddEmployee(title = R.string.controlAddEmployee),
     ControlTaskEmployee(title = R.string.controlTaskEmployee),
     ControlCreateTask(title = R.string.controlCreateTask),
-    ControlAddTask(title=R.string.controlAddTask)
+    ControlAddTask(title=R.string.controlAddTask),
+    BarCodeCamera(title=R.string.barcodeCamera)
 }
-@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalGetImage::class) @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WorkFlowApp(){
     val navController = rememberNavController()
@@ -111,6 +114,13 @@ fun WorkFlowApp(){
                 navArgument("employeeId"){type = NavType.StringType})
         ){
             ControlAddTaskCompose(navController = navController)
+        }
+
+
+        composable(
+            route = WorkFlowScreen.BarCodeCamera.name
+        ){
+            BarCodeComposable(navController = navController)
         }
         
         

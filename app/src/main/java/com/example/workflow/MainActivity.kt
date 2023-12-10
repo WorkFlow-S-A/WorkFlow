@@ -11,12 +11,25 @@ import android.os.IBinder
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
+import androidx.camera.core.ExperimentalGetImage
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.navigation.compose.rememberNavController
+import com.example.workflow.ui.BarCodeComposable
 import com.example.workflow.ui.theme.WorkFlowTheme
 import com.example.workflow.ui.WorkFlowApp
 import com.example.workflow.utils.bluetooth.BluetoothPermissionListener
@@ -51,13 +64,14 @@ class MainActivity : ComponentActivity(), BluetoothPermissionListener {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @OptIn(ExperimentalGetImage::class) @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             WorkFlowTheme {
                 WorkFlowApp()
             }
+
         }
         val serviceIntent = Intent(this, BluetoothService::class.java)
         startService(serviceIntent)
