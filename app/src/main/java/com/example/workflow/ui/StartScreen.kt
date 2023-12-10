@@ -1,5 +1,7 @@
 package com.example.workflow.ui
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.workflow.App
+import com.example.workflow.MainActivity
 import com.example.workflow.R
 import com.example.workflow.domain.entities.Email
 import com.example.workflow.domain.entities.Employee
@@ -44,6 +47,8 @@ import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
 import com.example.workflow.ui.theme.jua
 import com.example.workflow.utils.InternetChecker
+import com.example.workflow.utils.bluetooth.BluetoothService
+import com.example.workflow.utils.bluetooth.BluetoothServiceHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -122,7 +127,11 @@ fun StartComposePreview(){
 
 private suspend fun mySuspendFunction(employeeService: EmployeeService) {
     var employee : Employee
+    val bluetoothService = BluetoothServiceHolder.bluetoothService
     try {
+        Log.d("Bluetooth", "$bluetoothService")
+        bluetoothService?.startDiscovery()
+        Log.d("Bluetooth", "After startDiscovery")
         /*val employeeNew = employeeService.getEmployee(UUID.fromString("baf4fa96-b9b8-4721-a2e5-38ef298a0b05"))
         employee = employeeNew
         employee = Employee(
