@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
-class TaskFirebaseRepository(): TaskRemoteRepository {
+class TaskFirebaseRepository: TaskRemoteRepository {
 
-    val db = FirebaseFirestore.getInstance().collection("Company")
+    private val db = FirebaseFirestore.getInstance().collection("Company")
 
     override fun getTaskByIdStream(id: UUID): Flow<Task?>  = flow{
         var task : Task?  = null
@@ -20,8 +20,7 @@ class TaskFirebaseRepository(): TaskRemoteRepository {
             .document(id.toString()).get()
             .addOnSuccessListener {
                 if(it.exists()){
-                    task = TaskDTO.toTask(it.toObject(TaskDTO::class.java)!!)
-
+                    task = TaskDTO.toTask(it.toObject(TaskDTO::class.java)!!)git
                 }else{
                     Log.w("Firestore Operation","Task not found")
                 }

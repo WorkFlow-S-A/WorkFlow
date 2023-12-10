@@ -77,26 +77,24 @@ class CompanyFirebaseRepository {
             return name
         }
 
-        suspend fun findCompany(employeeId : String) : Boolean{
-            var isAdmin : Boolean = false
-            employeeMappedDb.document(employeeId).get()
-                .addOnSuccessListener{ document ->
-                    Log.d("FireBase Auth", "Checking user")
-                    if(document.exists()){
-                        class Data(val company : String)
-                        currentCompanyId = document.toObject(Data::class.java)?.company ?: ""
+        suspend fun findCompany(employeeId: String): Boolean {
+            var isAdmin: Boolean = false
 
-                    }else{
-                        currentCompanyId = employeeId
-                        isAdmin = true
-                    }
+            try {
+                val document = employeeMappedDb.document(employeeId).get().await()
+                Log.d("FireBase Auth", "Checking user")
 
+                if (document.exists()) {
+                    class Data(val company: String)
+                    currentCompanyId = document.toObject(Data::class.java)?.company ?: ""
+                } else {
+                    currentCompanyId = employeeId
+                    isAdmin = true
                 }
-                .addOnFailureListener {
+            } catch (e: Exception) {
+                Log.w("Firebase AUTH", e)
+            }
 
-                    Log.w("Firebase AUTH", it.cause)
-                }.await()
-            isAdmin
             return isAdmin
         }
 

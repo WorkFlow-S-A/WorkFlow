@@ -1,5 +1,7 @@
 package com.example.workflow.ui
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,7 +39,9 @@ import com.example.workflow.ui.customCompose.PasswordTextField
 import com.example.workflow.ui.customCompose.UserTextField
 import com.example.workflow.ui.theme.WorkFlowTheme
 import com.example.workflow.ui.theme.GreenWorkFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun LogInCompose(navController: NavController) {
@@ -92,12 +96,19 @@ fun LogInCompose(navController: NavController) {
                         coroutineScope.launch{
                             val uid : String = App.instance.firebaseAuthentication.logIn(userName, userPassword)
                             if(uid != "" ){
+                                Log.d("ES ADMIN", "ESTA ENTRANDO")
                                 if(CompanyFirebaseRepository.findCompany(uid)){
+                                    Log.d("ES ADMIN", "ES ADMIN")
                                     navController.navigate("controlEmployees")
+                                } else{
+                                    Log.d("NO ES ADMIN", "NO ES ADMIN")
+                                    navController.navigate("scheduleControlEmployee")
                                 }
 
-                                // TODO : AÑADIR PARTE DEL EMPLEADO
+                            } else {
+                                // Las credenciales son incorrectas, mostrar un mensaje al usuario para volver a intentarlo
                             }
+
                         }
                     }, text = "ENTRAR",
                         Modifier

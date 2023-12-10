@@ -80,21 +80,19 @@ class FirebaseAuthentication : Service(){
     }
 
 
-    suspend fun logIn(email:String, password:String) : String{
-        var uid :String = ""
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
+    suspend fun logIn(email: String, password: String): String {
+        var uid: String = ""
 
-                uid = it.user?.uid ?: ""
+        try {
+            val authResult = auth.signInWithEmailAndPassword(email, password).await()
 
-            }
-            .addOnFailureListener {
-                Log.w("Firebase AUTH", it.cause?.toString() ?: "")
+            uid = authResult.user?.uid ?: ""
+            Log.d("Firebase AUTH", "Log in successful")
+        } catch (e: Exception) {
+            Log.w("Firebase AUTH", e)
+            Log.d("Firebase AUTH", "Log in incorrecto")
+        }
 
-            }
-            .await()
-
-        uid
         return uid
     }
 
