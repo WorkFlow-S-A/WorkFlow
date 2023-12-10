@@ -20,7 +20,7 @@ class TaskFirebaseRepository: TaskRemoteRepository {
             .document(id.toString()).get()
             .addOnSuccessListener {
                 if(it.exists()){
-                    task = TaskDTO.toTask(it.toObject(TaskDTO::class.java)!!)git
+                    task = TaskDTO.toTask(it.toObject(TaskDTO::class.java)!!)
                 }else{
                     Log.w("Firestore Operation","Task not found")
                 }
