@@ -3,37 +3,25 @@ package com.example.workflow.ui
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,29 +29,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.workflow.domain.entities.EndHour
-import com.example.workflow.domain.entities.StartHour
-import com.example.workflow.domain.entities.Task
-import com.example.workflow.domain.entities.TaskDescription
-import com.example.workflow.domain.entities.TaskName
-import com.example.workflow.ui.customCompose.BottomBar
-import com.example.workflow.ui.customCompose.TopBar
-import com.example.workflow.ui.customCompose.TopBarControl
-import com.example.workflow.ui.theme.BlueWorkFlow
+import com.example.workflow.App
+import com.example.workflow.adapters.repositories.firebase.CompanyFirebaseRepository
+import com.example.workflow.ui.customCompose.CustomClickableText
 import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.time.temporal.ChronoUnit
-import java.util.Date
-import java.util.UUID
-import java.util.stream.Collectors
-import java.util.stream.Stream
 
-@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ControlTaskEmployeeCompose(navController: NavController) {
@@ -71,11 +44,37 @@ fun ControlTaskEmployeeCompose(navController: NavController) {
     val dataSource = CalendarDataSource()
     // we use `mutableStateOf` and `remember` inside composable function to schedules recomposition
     var calendarUiModel by remember { mutableStateOf(dataSource.getData(lastSelectedDate = dataSource.today)) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val arguments = navBackStackEntry?.arguments
+    val employeeId = arguments?.getString("employeeId")
+    var companyName by remember{ mutableStateOf("Company") }
+    val coroutineScope = rememberCoroutineScope()
+
+
+
+    var email by remember { mutableStateOf("jpereiro1@gmail.com") }
+    var name by remember { mutableStateOf("User name") }
+    var uid by remember { mutableStateOf("12345678X") }
+    var workHours by remember { mutableIntStateOf(35) }
+    var workedHours by remember { mutableIntStateOf(35) }
+
+    if(employeeId != null){
+        LaunchedEffect(Unit) {
+            val employee = App.instance.employeeService.getEmployee(employeeId)
+            email = employee.email.email
+            name = employee.name.name
+            uid = employee.employeeId.id
+            workHours = employee.workHours.workHours
+            workedHours = employee.workedHours.workedHours
+            companyName = CompanyFirebaseRepository.getCurrentCompanyName()
+
+        }
+    }
 
     WorkFlowTheme {
 
         Scaffold(
-            topBar = { TopBarControl({},true) },
+           // topBar = { TopBarControl({},true) },
             content = {padding ->
                 Column (modifier = Modifier.padding(padding),verticalArrangement = Arrangement.spacedBy(16.dp)){
                     Column(
@@ -89,8 +88,8 @@ fun ControlTaskEmployeeCompose(navController: NavController) {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("Empresa")
-                            Text("Usuario")
+                            CustomClickableText(companyName,Modifier , onClick = {navController.popBackStack()} )
+                            Text(name)
                         }
                         HeaderTask(
                             calendarUiModel,

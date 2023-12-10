@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +46,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.workflow.App
+import com.example.workflow.adapters.repositories.firebase.CompanyFirebaseRepository
+import com.example.workflow.domain.entities.Email
+import com.example.workflow.domain.entities.Employee
+import com.example.workflow.domain.entities.EmployeeID
+import com.example.workflow.domain.entities.EmployeeName
+import com.example.workflow.domain.entities.EmployeeSurname
+import com.example.workflow.domain.entities.EmployeeWorkHours
 import com.example.workflow.domain.entities.EndHour
 import com.example.workflow.domain.entities.StartHour
 import com.example.workflow.domain.entities.Task
@@ -54,6 +63,9 @@ import com.example.workflow.ui.customCompose.BottomBar
 import com.example.workflow.ui.customCompose.TopBar
 import com.example.workflow.ui.theme.BlueWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -68,6 +80,8 @@ import java.util.stream.Stream
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TaskEmployeeCompose(navController: NavController) {
+
+
 
     val dataSource = CalendarDataSource()
     // we use `mutableStateOf` and `remember` inside composable function to schedules recomposition
@@ -250,6 +264,9 @@ fun TaskEmployeeComposePreview() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Content(data: CalendarUiModel, onDateClickListener: (CalendarUiModel.Date) -> Unit) {
+
+    val coroutineScope = rememberCoroutineScope()
+
     Column {
 
         LazyRow {
@@ -260,11 +277,21 @@ fun Content(data: CalendarUiModel, onDateClickListener: (CalendarUiModel.Date) -
 
         LazyColumn (modifier = Modifier.padding(0.dp,10.dp,0.dp,0.dp)){
             //LLAMAR A LA BASE DE DATOS Y OBTENER LAS TAREAS DE ESE DIA PARA MOSTRARLO AQUI
-            items(items = data.visibleDates) {
-                TaskRow(task = Task(id = UUID.randomUUID(), TaskName("juan"),
-                    TaskDescription("asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf"), StartHour(startHour = Date(System.currentTimeMillis()+10000)),EndHour(endHour = Date(System.currentTimeMillis()+10000)),done = true)
-                )
+            coroutineScope.launch(Dispatchers.IO) {
+                try {
+                    val tasks = App.instance.taskService.getAllTasks()
+                    items(items = tasks) { task ->
+                        /*TaskRow(task = Task(id = UUID.randomUUID(), TaskName("juan"),
+                            TaskDescription("fasdfasdf"), StartHour(startHour = Date(System.currentTimeMillis()+10000)),EndHour(endHour = Date(System.currentTimeMillis()+10000)),done = true)
+                        )*/
+                        TaskRow(task)
+                    }
+                } catch (e: Exception) {
+
+                }
             }
+
+
         }
     }
 }
@@ -293,6 +320,7 @@ fun TaskRow(task : Task){
             Text(task.name.toString())
             Row (verticalAlignment = Alignment.CenterVertically){
                 Column() {
+                    //val dateFormater : DateTimeFormatter
                     Text(task.startHour.toString(), style = MaterialTheme.typography.labelSmall)
                     Text(task.endHour.toString() ,style = MaterialTheme.typography.labelSmall)
                 }

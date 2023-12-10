@@ -7,6 +7,7 @@ import com.example.workflow.adapters.repositories.firebase.TaskFirebaseRepositor
 import com.example.workflow.adapters.repositories.room.EmployeeRoomRepository
 import com.example.workflow.adapters.repositories.room.LocalDatabase
 import com.example.workflow.adapters.repositories.room.TaskRoomRepository
+import com.example.workflow.domain.entities.Employee
 import com.example.workflow.ports.service.EmployeeService
 import com.example.workflow.ports.service.TaskService
 import com.example.workflow.utils.InternetChecker
@@ -34,6 +35,8 @@ class App : Application() {
     val firebaseAuthentication by lazy{
         FirebaseAuthentication()
     }
+
+    var currentEmployeeUid : String? = null
 
     companion object {
         lateinit var instance: App

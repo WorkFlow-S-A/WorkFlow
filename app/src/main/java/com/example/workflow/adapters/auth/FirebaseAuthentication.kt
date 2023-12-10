@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import com.example.workflow.App
 import com.example.workflow.adapters.repositories.firebase.CompanyFirebaseRepository
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -57,6 +58,25 @@ class FirebaseAuthentication : Service(){
         currentUser.uid
         auth.updateCurrentUser(currentUser)
         return uid
+    }
+
+    suspend fun deleteEmployeeAccount(email: String, password: String) : Boolean{
+        var deleted = false
+        val currentUser : FirebaseUser = auth.currentUser!!
+        auth.signInWithEmailAndPassword(email, password).await()
+        val employeeService =  App.instance.employeeService
+        if(auth.currentUser != null){
+            employeeService.deleteEmployee(
+                employeeService.getEmployee(auth.currentUser!!.uid)
+            )
+            auth.currentUser!!.delete().await()
+            deleted = true
+        }else {
+            Log.w("Firebase AUTH", "User not found")
+        }
+
+        auth.updateCurrentUser(currentUser)
+        return deleted
     }
 
 

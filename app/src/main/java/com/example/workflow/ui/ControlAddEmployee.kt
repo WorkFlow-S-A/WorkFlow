@@ -45,13 +45,14 @@ import com.example.workflow.ui.theme.WorkFlowTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.Exception
 
 @Composable
 fun AddEmployeeCompose(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
 
     var userName by remember { mutableStateOf("") }
-    var userSurname by remember { mutableStateOf("Surname") }
+    var userSurname by remember { mutableStateOf("") }
     var userDNI by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
@@ -104,9 +105,13 @@ fun AddEmployeeCompose(navController: NavController) {
                                 .fillMaxWidth()
                         ) {
                             UserTextField(
-                                text = "Nombre de usuario",
+                                text = "Nombre",
                                 userName,
                                 onTextValueChange = { userName = it })
+                            UserTextField(
+                                text = "Apellido",
+                                userSurname,
+                                onTextValueChange = { userSurname = it })
                             UserTextField("DNI", userDNI, onTextValueChange = { userDNI = it })
                             EmailTextField(
                                 text = "Correo electrónico",
@@ -114,15 +119,18 @@ fun AddEmployeeCompose(navController: NavController) {
                                 onEmailValueChange = { email = it })
                             FilledButton(onClick = {
                                 coroutineScope.launch(Dispatchers.IO){
-                                    val employee = Employee(
-                                        name = EmployeeName(userName),
-                                        surname = EmployeeSurname(userSurname),
-                                        employeeId = EmployeeID(userDNI),
-                                        email = Email(email),
-                                        workHours = EmployeeWorkHours(0)
-                                    )
-                                    CompanyFirebaseRepository.addEmployeeToCompany(employee)
+                                    try {
+                                        val employee = Employee(
+                                            name = EmployeeName(userName),
+                                            surname = EmployeeSurname(userSurname),
+                                            employeeId = EmployeeID(userDNI),
+                                            email = Email(email),
+                                            workHours = EmployeeWorkHours(0)
+                                        )
+                                        CompanyFirebaseRepository.addEmployeeToCompany(employee)
+                                    }catch (e :Exception){
 
+                                    }
                                     withContext(Dispatchers.Main){
                                         navController.navigate("controlEmployees")
                                     }

@@ -11,9 +11,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
@@ -108,6 +114,14 @@ fun ScheduleControlEmployeeCompose(navController: NavController) {
                 }
             },
             bottomBar = { BottomBar(navController) }
+            , floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { /*TODO*/ },
+                    containerColor = GreenWorkFlow
+
+                ) {
+                    Icon(Icons.Default.CameraAlt, contentDescription = "Camera QR")
+            } }
         )
 
     }
@@ -120,7 +134,7 @@ fun HourRow(hourStart: Date,hourEnd: Date){
     val formatHour = SimpleDateFormat("HH:mm")
 
     Row(modifier = Modifier
-        .padding(bottom=8.dp)
+        .padding(bottom = 8.dp)
         .background(BlueWorkFlow)
         .fillMaxSize()
         .padding(15.dp),

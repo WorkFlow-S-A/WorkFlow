@@ -102,6 +102,7 @@ fun LogInCompose(navController: NavController) {
                                     navController.navigate("controlEmployees")
                                 } else{
                                     Log.d("NO ES ADMIN", "NO ES ADMIN")
+                                    App.instance.currentEmployeeUid = uid
                                     navController.navigate("scheduleControlEmployee")
                                 }
 

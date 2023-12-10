@@ -10,6 +10,7 @@ import kotlinx.coroutines.tasks.await
 class CompanyFirebaseRepository {
 
     companion object{
+
         private val db = FirebaseFirestore.getInstance().collection("Company")
         private val employeeMappedDb = FirebaseFirestore.getInstance().collection("EmployeeMappedCompany")
         private lateinit var currentCompanyId : String
@@ -36,9 +37,20 @@ class CompanyFirebaseRepository {
                 employee.id = uid
                 App.instance.employeeService.saveEmployee(employee)
                 employeeMappedDb.document(employee.id).set(mapOf("company" to getCurrentCompanyId()))
+                /*
+                db.document(currentCompanyId).collection("EmployeePrivacy")
+                    .document(employee.id).set(mapOf("privacy" to password))
+                    */
+
             }else{
                 Log.w("Employee operation", "User did not add")
             }
+        }
+
+        suspend fun deleteEmployeeFromCompany(id: String){
+            db.document(currentCompanyId).collection("Employees")
+                .document(id).delete().await()
+
         }
 
         fun deleteCompany(companyID : String){
@@ -52,6 +64,17 @@ class CompanyFirebaseRepository {
         fun getCurrentCompanyId() : String{
             updateCompanyId()
             return currentCompanyId
+        }
+
+        suspend fun getCurrentCompanyName() : String{
+            var name : String = ""
+            db.document(currentCompanyId).get()
+                .addOnSuccessListener {
+                    if (it.exists()){
+                        name = it.getString("companyName")!!
+                    }
+                }.await()
+            return name
         }
 
         suspend fun findCompany(employeeId: String): Boolean {
@@ -73,6 +96,14 @@ class CompanyFirebaseRepository {
             }
 
             return isAdmin
+        }
+
+        suspend fun updateQr(number : String){
+
+            db.document(currentCompanyId).set(mapOf(
+                "currentQrCode" to number,
+                "companyName" to getCurrentCompanyName()
+            ))
         }
 
     }
