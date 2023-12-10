@@ -20,8 +20,8 @@ import java.util.Date
 import java.util.UUID
 
 class EmployeeRoomRepository(private val employeeDao: EmployeeRoomDao): EmployeeLocalRepository {
-    override suspend fun getEmployee(id: UUID): Flow<Employee?> {
-        val employee = employeeDao.getEmployee(id.toString())
+    override suspend fun getEmployee(id: String): Flow<Employee?> {
+        val employee = employeeDao.getEmployee(id)
         return employee.map { roomEmployee ->
             roomEmployee.toEmployee()
         }

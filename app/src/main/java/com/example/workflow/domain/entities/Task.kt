@@ -37,7 +37,7 @@ value class TaskName(val name: String) {
 @JvmInline
 value class TaskDescription(val description: String) {
     init {
-        require(description.length >= 100) { "The description length must be 100 character or fewer" }
+        require(description.length <= 100) { "The description length must be 100 character or fewer" }
     }
     override fun toString(): String {
         return "TaskDescription = $description"

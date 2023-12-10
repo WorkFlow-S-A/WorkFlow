@@ -6,7 +6,9 @@ import com.example.workflow.domain.entities.Employee
 import com.example.workflow.ports.repository.EmployeeRemoteRepository
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 import kotlinx.coroutines.flow.flow
@@ -30,19 +32,17 @@ class EmployeeFirebaseRepository : EmployeeRemoteRepository{
     override suspend fun getAllEmployeesStream(): Flow<List<Employee>> = flow {
         val querySnapshot = db.document(CompanyFirebaseRepository.getCurrentCompanyId())
             .collection("Employees").get().await()
-        val employees : List<EmployeeDTO?> = querySnapshot.documents.map { document ->
-            document.toObject(EmployeeDTO::class.java)
-        }
-        val resultEmployees : List<Employee> = employees.filterNotNull().map { employeeDTO -> EmployeeDTO.toEmployee(
-            employeeDTO
-        )  }
+        val dtoList : List<EmployeeDTO> = querySnapshot.toObjects(EmployeeDTO::class.java)
 
-        emit(resultEmployees)
+        emit(dtoList.map {
+            EmployeeDTO.toEmployee(it)
+        })
+
     }
 
-    override suspend fun getByIdStream(id: UUID): Flow<Employee?> = flow{
+    override suspend fun getByIdStream(id: String): Flow<Employee?> = flow{
         val data : DocumentSnapshot? =  db.document(CompanyFirebaseRepository.getCurrentCompanyId())
-            .collection("Employees").document(id.toString()).get().await()
+            .collection("Employees").document(id).get().await()
         if(data != null){
             val employeeDTO : EmployeeDTO? = data.toObject(EmployeeDTO :: class.java)
             if(employeeDTO == null){
