@@ -17,7 +17,8 @@ interface EmployeeRemoteRepository {
 
     suspend fun updateEmployeeField(id: String, newData : String, fieldType : String )
 
+    suspend fun checkIn(employee: Employee, checkInTime: String)
 
-
+    suspend fun checkOut(employee: Employee, checkOutTime: String)
 
 }

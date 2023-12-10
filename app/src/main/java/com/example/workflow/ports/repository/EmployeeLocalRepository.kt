@@ -17,4 +17,8 @@ interface EmployeeLocalRepository {
     suspend fun saveAll(employees : List<Employee>)
     
     suspend fun getDesynchronizedEmployees() : List<Employee>
+
+    suspend fun checkIn(employee: Employee, checkInTime: String)
+
+    suspend fun checkOut(employee: Employee, checkOutTime: String)
 }

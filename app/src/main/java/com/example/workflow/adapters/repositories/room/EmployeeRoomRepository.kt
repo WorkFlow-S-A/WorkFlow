@@ -1,5 +1,6 @@
 package com.example.workflow.adapters.repositories.room
 
+import com.example.workflow.domain.entities.AttendanceRecord
 import com.example.workflow.domain.entities.Email
 import com.example.workflow.domain.entities.Employee
 import com.example.workflow.domain.entities.EmployeeID
@@ -45,6 +46,23 @@ class EmployeeRoomRepository(private val employeeDao: EmployeeRoomDao): Employee
         return roomDesynchronizedEmployees.map { it.toEmployee() }
     }
 
+    override suspend fun checkIn(employee: Employee, checkInTime: String) {
+        val currentDayAttendance = AttendanceRecord(checkInTime, "")
+        employee.attendanceHistory.add(currentDayAttendance)
+        if (employee.attendanceHistory.size > 31) {
+            employee.attendanceHistory = employee.attendanceHistory.subList(employee.attendanceHistory.size - 31, employee.attendanceHistory.size).toMutableList()
+        }
+        employeeDao.update(employee.toEmployeeRoomEntity(false))
+    }
+
+    override suspend fun checkOut(employee: Employee, checkOutTime: String) {
+        val lastRecord = employee.attendanceHistory.lastOrNull()
+        if (lastRecord != null && lastRecord.checkOutTime.isBlank()) {
+            lastRecord.checkOutTime = checkOutTime
+        }
+        employeeDao.update(employee.toEmployeeRoomEntity(false))
+    }
+
     private fun RoomEmployee.toEmployee(): Employee {
 
         return Employee(
@@ -55,7 +73,8 @@ class EmployeeRoomRepository(private val employeeDao: EmployeeRoomDao): Employee
             schedule = EmployeeSchedule(RoomEmployee.convertJsonToSchedule(this.schedule)),
             workHours = EmployeeWorkHours(this.workHours),
             workedHours = EmployeeWorkedHours(this.workedHours),
-            email = Email(this.email)
+            email = Email(this.email),
+            attendanceHistory = RoomEmployee.convertJsonToAttendanceHistory(this.attendanceHistory)
         )
     }
 
@@ -69,6 +88,7 @@ class EmployeeRoomRepository(private val employeeDao: EmployeeRoomDao): Employee
             workHours = this.workHours.workHours,
             workedHours = this.workedHours.workedHours,
             email = this.email.email,
+            attendanceHistory = RoomEmployee.convertAttendanceHistoryToJson(this.attendanceHistory),
             needSync = needSync
         )
     }

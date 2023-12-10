@@ -1,5 +1,6 @@
 package com.example.workflow.adapters.dtos
 
+import com.example.workflow.domain.entities.AttendanceRecord
 import com.example.workflow.domain.entities.Email
 import com.example.workflow.domain.entities.Employee
 import com.example.workflow.domain.entities.EmployeeID
@@ -22,6 +23,7 @@ class EmployeeDTO private constructor() {
     var workHours: Int = 0
     var workedHours: Int = 0
     lateinit var email : String
+    lateinit var attendanceHistory: List<AttendanceRecord>
 
     companion object{
         fun toEmployee(employeeDTO: EmployeeDTO) : Employee{
@@ -32,7 +34,8 @@ class EmployeeDTO private constructor() {
                 surname = EmployeeSurname(employeeDTO.surname),
                 workHours = EmployeeWorkHours(employeeDTO.workHours),
                 workedHours = EmployeeWorkedHours(employeeDTO.workedHours),
-                email = Email(employeeDTO.email)
+                email = Email(employeeDTO.email),
+                attendanceHistory = employeeDTO.attendanceHistory.toMutableList()
             )
 
             employee.schedule.schedule.addAll(employeeDTO.schedule)
@@ -49,6 +52,7 @@ class EmployeeDTO private constructor() {
             employeeDTO.workHours = employee.workHours.workHours
             employeeDTO.workedHours = employee.workedHours.workedHours
             employeeDTO.email = employee.email.email
+            employeeDTO.attendanceHistory = employee.attendanceHistory.toList()
 
             return employeeDTO
         }

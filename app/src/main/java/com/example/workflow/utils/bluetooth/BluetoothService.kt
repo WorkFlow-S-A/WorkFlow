@@ -16,12 +16,18 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.content.ContextCompat
+import com.example.workflow.utils.bluetooth.BluetoothUtils.MAC_ADDRESS
 
 class BluetoothService : Service() {
 
     private val binder = LocalBinder()
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var permissionListener: BluetoothPermissionListener? = null
+    private val discoveredDevices: MutableList<BluetoothDevice> = mutableListOf()
+
+    fun getDiscoveredDevices(): List<BluetoothDevice> {
+        return discoveredDevices
+    }
 
     inner class LocalBinder : Binder() {
         fun getService(): BluetoothService {
@@ -53,9 +59,8 @@ class BluetoothService : Service() {
             enableBtIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
             // Verificar permiso ACCESS_FINE_LOCATION antes de iniciar la actividad
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-                permissionListener?.requestBluetoothPermission()
+            if (!checkBluetoothPermission()) {
+                requestBluetoothPermission()
             } else {
                 // Si ya se tiene el permiso, iniciar la actividad para habilitar Bluetooth
                 Log.d(TAG, "Permission granted")
@@ -76,9 +81,8 @@ class BluetoothService : Service() {
     fun startDiscovery() {
         Log.d("Bluetooth", "Comienzo de startDiscovery")
         // Verificar permiso ACCESS_FINE_LOCATION antes de iniciar la actividad
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
-            permissionListener?.requestBluetoothPermission()
+        if (!checkBluetoothPermission()){
+            requestBluetoothPermission()
         } else {
             bluetoothAdapter?.startDiscovery()
             Log.d("Bluetooth", "Se tienen los permisos en startDiscovery")
@@ -96,9 +100,9 @@ class BluetoothService : Service() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 BluetoothDevice.ACTION_FOUND -> {
-                    val device: BluetoothDevice? =
-                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                    val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     device?.let {
+                        discoveredDevices.add(device)
                         Log.d("bluetoothReceiver", "$device")
                     }
                 }
@@ -119,11 +123,28 @@ class BluetoothService : Service() {
         }
     }
 
-    fun connectToDevice(device: BluetoothDevice) {
-        // TODO: implementar la lógica para conectarse a un dispositivo Bluetooth específico
+    fun connectToDevice(): Boolean {
+        val device = discoveredDevices.firstOrNull { it.address == MAC_ADDRESS }
+        return if (device != null) {
+            true
+        } else {
+            Log.d(TAG, "El dispositivo con la dirección MAC $MAC_ADDRESS no fue encontrado.")
+            false
+        }
+    }
+
+    // Función para verificar y solicitar permisos de Bluetooth
+    fun checkBluetoothPermission(): Boolean {
+        // Comprueba si tienes permiso para acceder al Bluetooth.
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun requestBluetoothPermission() {
+        permissionListener?.requestBluetoothPermission()
     }
 
     companion object {
         private const val TAG = "BluetoothService"
+        private const val REQUEST_BLUETOOTH_PERMISSION = 123
     }
 }
