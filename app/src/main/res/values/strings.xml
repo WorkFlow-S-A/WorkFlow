@@ -13,6 +13,7 @@
     <string name="controlTaskEmployee">Control Task Employee</string>
     <string name="controlCreateTask">Control Create Task</string>
     <string name="controlAddTask">Control Add Task</string>
+    <string name="barcodeCamera">Bar Code Camera</string>
     <string name="buttonHome1">Ya tengo una Empresa</string>
     <string name="buttonHome2">Nueva Empresa</string>
     <string name="version_app">Version 1.0</string>

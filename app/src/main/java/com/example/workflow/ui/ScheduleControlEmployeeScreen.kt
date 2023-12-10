@@ -130,7 +130,7 @@ fun ScheduleControlEmployeeCompose(navController: NavController) {
             bottomBar = { BottomBar(navController) }
             , floatingActionButton = {
                 FloatingActionButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate("barcodeCamera") },
                     containerColor = GreenWorkFlow
 
                 ) {
