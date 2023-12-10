@@ -114,7 +114,7 @@ fun LogInCompose(navController: NavController) {
                     }, text = "ENTRAR",
                         Modifier
                             .padding(top = 10.dp)
-                            .fillMaxWidth(),Color.Red,Color.White)
+                            .fillMaxWidth(), GreenWorkFlow,Color.Black)
                     CustomClickableText(text = "¿Olvidaste la contraseña?", modifier = Modifier
                         .align(Alignment.Start)
                         .padding(top = 10.dp), onClick = {navController.navigate("forgotPassword")})
