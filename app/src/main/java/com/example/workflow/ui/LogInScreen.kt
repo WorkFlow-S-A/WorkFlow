@@ -90,7 +90,7 @@ fun LogInCompose(navController: NavController) {
                 ){
                     UserTextField(text = "Email",userName, onTextValueChange = { userName = it})
                     PasswordTextField(text="Contraseña",userPassword, onPasswordValueChange = {userPassword = it})
-
+                    val context = LocalContext.current
                     FilledButton(onClick =
                     {
                         coroutineScope.launch{
@@ -108,13 +108,17 @@ fun LogInCompose(navController: NavController) {
 
                             } else {
                                 // Las credenciales son incorrectas, mostrar un mensaje al usuario para volver a intentarlo
+                                Toast.makeText(
+                                    context
+                                    ,"Credenciales incorrectas, vuelve a intentarlo",
+                                    Toast.LENGTH_LONG).show()
                             }
 
                         }
                     }, text = "ENTRAR",
                         Modifier
                             .padding(top = 10.dp)
-                            .fillMaxWidth(),Color.Red,Color.White)
+                            .fillMaxWidth(), GreenWorkFlow,Color.Black)
                     CustomClickableText(text = "¿Olvidaste la contraseña?", modifier = Modifier
                         .align(Alignment.Start)
                         .padding(top = 10.dp), onClick = {navController.navigate("forgotPassword")})

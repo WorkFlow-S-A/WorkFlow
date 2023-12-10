@@ -1,6 +1,7 @@
 package com.example.workflow.ui
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.workflow.App
 import com.example.workflow.domain.entities.EndHour
 import com.example.workflow.domain.entities.StartHour
 import com.example.workflow.domain.entities.Task
@@ -44,6 +46,10 @@ import com.example.workflow.ui.customCompose.TopBar
 import com.example.workflow.ui.theme.BlueWorkFlow
 import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
+import com.example.workflow.utils.bluetooth.BluetoothServiceHolder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
@@ -68,10 +74,41 @@ fun ScheduleControlEmployeeCompose(navController: NavController) {
                     Text("Control horario", fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     Text(LocalDate.now().toString(), style = MaterialTheme.typography.titleMedium)
                     Row(horizontalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxWidth()){
-                        Button(onClick = {  }, colors = ButtonDefaults.buttonColors(containerColor = BlueWorkFlow, contentColor = Color.White), shape = ShapeDefaults.Small) {
+                        Button(onClick = {
+                            val bluetoothService = BluetoothServiceHolder.bluetoothService
+                            bluetoothService?.startDiscovery()
+                            if (bluetoothService?.connectToDevice() == true) {
+                                Log.d("CheckIn", "Se ha encontrado el dispositivo")
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    val employee = App.instance.currentEmployeeUid?.let {
+                                        App.instance.employeeService.getEmployee(
+                                            it
+                                        )
+                                    }
+                                    if (employee != null) {
+                                        App.instance.employeeService.checkIn(employee, Date().toString())
+                                    }
+                                }
+                            } else Log.d("CheckIn", "No se ha encontrado el dispositivo")
+                        }, colors = ButtonDefaults.buttonColors(containerColor = BlueWorkFlow, contentColor = Color.White), shape = ShapeDefaults.Small) {
                             Text(text = "Marcar entrada" )
                         }
-                        Button(onClick = {  }, colors = ButtonDefaults.buttonColors(containerColor = BlueWorkFlow, contentColor = Color.White), shape = ShapeDefaults.Small) {
+                        Button(onClick = {
+                            val bluetoothService = BluetoothServiceHolder.bluetoothService
+                            bluetoothService?.startDiscovery()
+                            if (bluetoothService?.connectToDevice() == true) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    val employee = App.instance.currentEmployeeUid?.let {
+                                        App.instance.employeeService.getEmployee(
+                                            it
+                                        )
+                                    }
+                                    if (employee != null) {
+                                        App.instance.employeeService.checkOut(employee, Date().toString())
+                                    }
+                                }
+                            }
+                        }, colors = ButtonDefaults.buttonColors(containerColor = BlueWorkFlow, contentColor = Color.White), shape = ShapeDefaults.Small) {
                             Text(text = "Marcar salida" )
                         }
                     }
@@ -93,7 +130,7 @@ fun ScheduleControlEmployeeCompose(navController: NavController) {
             bottomBar = { BottomBar(navController) }
             , floatingActionButton = {
                 FloatingActionButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate("barcodeCamera") },
                     containerColor = GreenWorkFlow
 
                 ) {

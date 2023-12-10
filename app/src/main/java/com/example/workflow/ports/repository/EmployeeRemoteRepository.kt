@@ -20,7 +20,8 @@ interface EmployeeRemoteRepository {
 
     fun addTaskToEmployee(id : String, task : Task)
 
+    suspend fun checkIn(employee: Employee, checkInTime: String)
 
-
+    suspend fun checkOut(employee: Employee, checkOutTime: String)
 
 }

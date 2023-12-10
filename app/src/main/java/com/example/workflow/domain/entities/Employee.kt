@@ -13,6 +13,7 @@ data class Employee(
     var workHours: EmployeeWorkHours,
     var workedHours: EmployeeWorkedHours = EmployeeWorkedHours(0),
     var email : Email,
+    var attendanceHistory: MutableList<AttendanceRecord> = mutableListOf()
     ){
 
     override fun toString(): String{
@@ -160,3 +161,8 @@ class TaskComparator : Comparator<Task>{
     }
 
 }
+
+data class AttendanceRecord(
+    val checkInTime: String,
+    var checkOutTime: String
+)

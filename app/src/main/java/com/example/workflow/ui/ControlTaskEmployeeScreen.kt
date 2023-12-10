@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -36,6 +38,8 @@ import com.example.workflow.adapters.repositories.firebase.CompanyFirebaseReposi
 import com.example.workflow.ui.customCompose.CustomClickableText
 import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -49,7 +53,6 @@ fun ControlTaskEmployeeCompose(navController: NavController) {
     val employeeId = arguments?.getString("employeeId")
     var companyName by remember{ mutableStateOf("Company") }
     val coroutineScope = rememberCoroutineScope()
-
 
 
     var email by remember { mutableStateOf("jpereiro1@gmail.com") }
@@ -127,6 +130,22 @@ fun ControlTaskEmployeeCompose(navController: NavController) {
                                 )
                             }
                         )
+                        LazyColumn(){
+
+                            coroutineScope.launch(Dispatchers.IO) {
+                                try {
+                                    val tasks = App.instance.taskService.getAllTasks()
+                                    items(items = tasks) { task ->
+                                        /*TaskRow(task = Task(id = UUID.randomUUID(), TaskName("juan"),
+                                            TaskDescription("fasdfasdf"), StartHour(startHour = Date(System.currentTimeMillis()+10000)),EndHour(endHour = Date(System.currentTimeMillis()+10000)),done = true)
+                                        )*/
+                                        TaskRow(task)
+                                    }
+                                } catch (e: Exception) {
+
+                                }
+                            }
+                        }
                     }
                 }
             }, floatingActionButton = {

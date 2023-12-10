@@ -115,6 +115,22 @@ class EmployeeService : Service(){
         employeeRemoteRepository.addTaskToEmployee(id, task)
     }
 
+    suspend fun checkIn(employee: Employee, checkInTime: String) {
+        if (internetChecker.checkConnectivity()) {
+            employeeRemoteRepository.checkIn(employee, checkInTime)
+            employeeLocalRepository.checkIn(employee, checkInTime)
+        } else
+            employeeLocalRepository.checkIn(employee, checkInTime)
+    }
+
+    suspend fun checkOut(employee: Employee, checkOutTime: String) {
+        if (internetChecker.checkConnectivity()) {
+            employeeRemoteRepository.checkOut(employee, checkOutTime)
+            employeeLocalRepository.checkOut(employee, checkOutTime)
+        } else
+            employeeLocalRepository.checkOut(employee, checkOutTime)
+    }
+
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }

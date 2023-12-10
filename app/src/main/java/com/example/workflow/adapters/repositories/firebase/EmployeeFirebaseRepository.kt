@@ -3,6 +3,7 @@ package com.example.workflow.adapters.repositories.firebase
 import android.util.Log
 import com.example.workflow.adapters.dtos.EmployeeDTO
 import com.example.workflow.adapters.dtos.TaskDTO
+import com.example.workflow.domain.entities.AttendanceRecord
 import com.example.workflow.domain.entities.Employee
 import com.example.workflow.domain.entities.Task
 import com.example.workflow.ports.repository.EmployeeRemoteRepository
@@ -89,7 +90,53 @@ class EmployeeFirebaseRepository : EmployeeRemoteRepository{
             Log.w("Firebase operation", "Error updating document")
         }
 
+    }
 
+    suspend fun updateAttendanceHistoryList(id: String, newAttendanceHistory: List<AttendanceRecord>) {
+        try {
+            val document = db.document(CompanyFirebaseRepository.getCurrentCompanyId())
+                .collection("Employees")
+                .document(id)
+                .get()
+                .await()
+
+            if (document.exists()) {
+                val employeeRef = db.document(CompanyFirebaseRepository.getCurrentCompanyId())
+                    .collection("Employees")
+                    .document(id)
+
+                val newData = hashMapOf<String, Any>("attendanceHistory" to newAttendanceHistory)
+
+                employeeRef.update(newData)
+                    .addOnSuccessListener {
+                        Log.d("Firebase operation", "Document successfully updated!")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("Firebase operation", "Error updating document", e)
+                    }
+            } else {
+                Log.w("Firebase operation", "Document not found")
+            }
+        } catch (e: Exception) {
+            Log.e("Firebase operation", "Error updating document: ${e.message}", e)
+        }
+    }
+
+    override suspend fun checkIn(employee: Employee, checkInTime: String) {
+        val currentDayAttendance = AttendanceRecord(checkInTime, "")
+        employee.attendanceHistory.add(currentDayAttendance)
+        if (employee.attendanceHistory.size > 31) {
+            employee.attendanceHistory = employee.attendanceHistory.subList(employee.attendanceHistory.size - 31, employee.attendanceHistory.size).toMutableList()
+        }
+        updateAttendanceHistoryList(employee.id, employee.attendanceHistory.toList())
+    }
+
+    override suspend fun checkOut(employee: Employee, checkOutTime: String) {
+        val lastRecord = employee.attendanceHistory.lastOrNull()
+        if (lastRecord != null && lastRecord.checkOutTime.isBlank()) {
+            lastRecord.checkOutTime = checkOutTime
+        }
+        updateAttendanceHistoryList(employee.id, employee.attendanceHistory.toList())
     }
 
     override fun addTaskToEmployee(employeeUid : String, task: Task){
@@ -103,4 +150,6 @@ class EmployeeFirebaseRepository : EmployeeRemoteRepository{
             .document(employeeUid)
             .update("schedule", FieldValue.arrayRemove(TaskDTO.fromTask(task)))
     }
+
+    
 }
