@@ -10,8 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +33,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.workflow.ui.customCompose.TopBarControl
 import com.example.workflow.ui.theme.BlueWorkFlow
+import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
 
 @Composable
@@ -66,6 +71,14 @@ fun ControlAddTaskCompose(navController: NavController){
                             TaskRow("nameTask")
                         }
                     }
+                }
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { navController.navigate(WorkFlowScreen.ControlCreateTask.name) },
+                    containerColor = GreenWorkFlow
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add")
                 }
             }
         )

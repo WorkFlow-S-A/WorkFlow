@@ -52,7 +52,7 @@ fun AddEmployeeCompose(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
 
     var userName by remember { mutableStateOf("") }
-    var userSurname by remember { mutableStateOf("Surname") }
+    var userSurname by remember { mutableStateOf("") }
     var userDNI by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
@@ -105,9 +105,13 @@ fun AddEmployeeCompose(navController: NavController) {
                                 .fillMaxWidth()
                         ) {
                             UserTextField(
-                                text = "Nombre de usuario",
+                                text = "Nombre",
                                 userName,
                                 onTextValueChange = { userName = it })
+                            UserTextField(
+                                text = "Apellido",
+                                userSurname,
+                                onTextValueChange = { userSurname = it })
                             UserTextField("DNI", userDNI, onTextValueChange = { userDNI = it })
                             EmailTextField(
                                 text = "Correo electrónico",
