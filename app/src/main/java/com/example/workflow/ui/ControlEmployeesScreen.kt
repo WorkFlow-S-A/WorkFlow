@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,6 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.workflow.App
 import com.example.workflow.domain.entities.Employee
+import com.example.workflow.ui.customCompose.FilledButton
 import com.example.workflow.ui.customCompose.TopBarControl
 import com.example.workflow.ui.theme.BlueWorkFlow
 import com.example.workflow.ui.theme.GreenWorkFlow
@@ -71,9 +73,23 @@ fun ControlEmployeesCompose(navController: NavController){
                     .fillMaxSize()
                     .padding(10.dp)
                 ){
-                    Text("Empleados",
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.headlineMedium )
+                    Row(verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween){
+                        Text("Empleados",
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.headlineMedium )
+
+                        FilledButton(
+                            onClick = { /*TODO*/ },
+                            text = "QR",
+                            modifier = Modifier,
+                            containerColor = GreenWorkFlow,
+                            contentColor = Color.Black
+                        )
+
+                    }
+
 
                     LazyColumn (modifier = Modifier
                         .padding(10.dp, 10.dp, 10.dp, 10.dp)
