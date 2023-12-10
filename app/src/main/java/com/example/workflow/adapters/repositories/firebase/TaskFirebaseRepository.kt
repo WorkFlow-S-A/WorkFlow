@@ -6,22 +6,48 @@ import com.example.workflow.domain.entities.Task
 import com.example.workflow.ports.repository.TaskRemoteRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
 class TaskFirebaseRepository(): TaskRemoteRepository {
 
     val db = FirebaseFirestore.getInstance().collection("Company")
 
-    override fun getTaskByIdStream(id: UUID): Flow<Task?> {
-        TODO("Not yet implemented")
+    override fun getTaskByIdStream(id: UUID): Flow<Task?>  = flow{
+        var task : Task?  = null
+        db.document(CompanyFirebaseRepository.getCurrentCompanyId()).collection("Tasks")
+            .document(id.toString()).get()
+            .addOnSuccessListener {
+                if(it.exists()){
+                    task = TaskDTO.toTask(it.toObject(TaskDTO::class.java)!!)
+
+                }else{
+                    Log.w("Firestore Operation","Task not found")
+                }
+            }.addOnFailureListener {
+                Log.w("Firestore Operation", it)
+            }.await()
+        emit(task)
     }
 
-    override fun getAllTasksStream(): Flow<List<Task>> {
-        TODO("Not yet implemented")
+    override fun getAllTasksStream(): Flow<List<Task>> = flow{
+        var tasks : List<Task> = emptyList()
+        db.document(CompanyFirebaseRepository.getCurrentCompanyId()).collection("Tasks")
+            .get().addOnSuccessListener {
+                val taskDTOList = it.toObjects(TaskDTO::class.java)
+                tasks = taskDTOList.map { taskDTO ->
+                    TaskDTO.toTask(taskDTO)
+                }
+            }.await()
+        emit(tasks)
     }
 
     override suspend fun saveAll(tasks: List<Task>) {
-        TODO("Not yet implemented")
+        val taskCollection = db.document(CompanyFirebaseRepository.getCurrentCompanyId()).collection("Tasks")
+        tasks.forEach{
+            taskCollection.document(it.id.toString()).set(TaskDTO.fromTask(it))
+        }
     }
 
     override suspend fun insertTask(task: Task) {
@@ -36,7 +62,9 @@ class TaskFirebaseRepository(): TaskRemoteRepository {
     }
 
     override suspend fun deleteTask(task: Task) {
-        TODO("Not yet implemented")
+        db.document(CompanyFirebaseRepository.getCurrentCompanyId()).collection("Tasks")
+            .document(task.id.toString()).delete()
+
     }
 
     override suspend fun updateTask(task: Task) {
