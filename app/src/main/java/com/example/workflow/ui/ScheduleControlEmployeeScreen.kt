@@ -1,6 +1,7 @@
 package com.example.workflow.ui
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -77,11 +78,18 @@ fun ScheduleControlEmployeeCompose(navController: NavController) {
                             val bluetoothService = BluetoothServiceHolder.bluetoothService
                             bluetoothService?.startDiscovery()
                             if (bluetoothService?.connectToDevice() == true) {
+                                Log.d("CheckIn", "Se ha encontrado el dispositivo")
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    val employee = App.instance.employeeService.getEmployee(App.instance.currentEmployeeUid)
-                                    App.instance.employeeService.checkIn(employee, Date().toString())
+                                    val employee = App.instance.currentEmployeeUid?.let {
+                                        App.instance.employeeService.getEmployee(
+                                            it
+                                        )
+                                    }
+                                    if (employee != null) {
+                                        App.instance.employeeService.checkIn(employee, Date().toString())
+                                    }
                                 }
-                            }
+                            } else Log.d("CheckIn", "No se ha encontrado el dispositivo")
                         }, colors = ButtonDefaults.buttonColors(containerColor = BlueWorkFlow, contentColor = Color.White), shape = ShapeDefaults.Small) {
                             Text(text = "Marcar entrada" )
                         }
@@ -90,8 +98,14 @@ fun ScheduleControlEmployeeCompose(navController: NavController) {
                             bluetoothService?.startDiscovery()
                             if (bluetoothService?.connectToDevice() == true) {
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    val employee = App.instance.employeeService.getEmployee(App.instance.currentEmployeeUid)
-                                    App.instance.employeeService.checkOut(employee, Date().toString())
+                                    val employee = App.instance.currentEmployeeUid?.let {
+                                        App.instance.employeeService.getEmployee(
+                                            it
+                                        )
+                                    }
+                                    if (employee != null) {
+                                        App.instance.employeeService.checkOut(employee, Date().toString())
+                                    }
                                 }
                             }
                         }, colors = ButtonDefaults.buttonColors(containerColor = BlueWorkFlow, contentColor = Color.White), shape = ShapeDefaults.Small) {
