@@ -44,7 +44,6 @@ class BluetoothService : Service() {
 
         if (bluetoothAdapter == null) {
             Log.d(TAG, "Bluetooth not supported")
-            // Aquí puedes manejar la situación en la que el dispositivo no admite Bluetooth
             return
         }
 
