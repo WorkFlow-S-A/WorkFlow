@@ -2,7 +2,9 @@ package com.example.workflow.adapters.repositories.firebase
 
 import android.util.Log
 import com.example.workflow.App
+import com.example.workflow.adapters.dtos.TaskDTO
 import com.example.workflow.domain.entities.Employee
+import com.example.workflow.domain.entities.Task
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
@@ -105,6 +107,7 @@ class CompanyFirebaseRepository {
                 "companyName" to getCurrentCompanyName()
             ))
         }
+
 
     }
 

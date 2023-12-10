@@ -2,9 +2,12 @@ package com.example.workflow.adapters.repositories.firebase
 
 import android.util.Log
 import com.example.workflow.adapters.dtos.EmployeeDTO
+import com.example.workflow.adapters.dtos.TaskDTO
 import com.example.workflow.domain.entities.Employee
+import com.example.workflow.domain.entities.Task
 import com.example.workflow.ports.repository.EmployeeRemoteRepository
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -87,5 +90,17 @@ class EmployeeFirebaseRepository : EmployeeRemoteRepository{
         }
 
 
+    }
+
+    override fun addTaskToEmployee(employeeUid : String, task: Task){
+        db.document(CompanyFirebaseRepository.getCurrentCompanyId()).collection("Employees")
+            .document(employeeUid)
+            .update("schedule", FieldValue.arrayUnion(TaskDTO.fromTask(task)))
+    }
+
+    fun removeTaskToEmployee(employeeUid : String, task: Task){
+        db.document(CompanyFirebaseRepository.getCurrentCompanyId()).collection("Employees")
+            .document(employeeUid)
+            .update("schedule", FieldValue.arrayRemove(TaskDTO.fromTask(task)))
     }
 }

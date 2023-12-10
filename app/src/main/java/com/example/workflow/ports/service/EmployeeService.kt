@@ -8,6 +8,7 @@ import android.util.Log
 import com.example.workflow.App
 import com.example.workflow.utils.InternetChecker
 import com.example.workflow.domain.entities.Employee
+import com.example.workflow.domain.entities.Task
 import com.example.workflow.ports.repository.EmployeeLocalRepository
 import com.example.workflow.ports.repository.EmployeeRemoteRepository
 import kotlinx.coroutines.flow.Flow
@@ -108,6 +109,10 @@ class EmployeeService : Service(){
 
 
 
+    }
+
+    fun addTaskToEmployee(id : String, task : Task){
+        employeeRemoteRepository.addTaskToEmployee(id, task)
     }
 
     override fun onBind(intent: Intent?): IBinder? {

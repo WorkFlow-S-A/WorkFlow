@@ -1,5 +1,7 @@
 package com.example.workflow.domain.entities
 
+import android.annotation.SuppressLint
+import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
 
@@ -25,12 +27,12 @@ value class TaskName(val name: String) {
 
     init {
         require(
-            Regex("^[a-zA-Z]{2,}\$").matches(name)) {
+            Regex("^[a-zA-Z]{2,}$").matches(name)) {
             "The name must have at least two letters and consist only of letters."
         }
     }
     override fun toString(): String {
-        return "TaskName = $name"
+        return name
     }
 }
 
@@ -40,7 +42,7 @@ value class TaskDescription(val description: String) {
         require(description.length <= 100) { "The description length must be 100 character or fewer" }
     }
     override fun toString(): String {
-        return "TaskDescription = $description"
+        return description
     }
 
 }
@@ -51,8 +53,10 @@ value class StartHour(val startHour: Date) {
         require(!startHour.before(Date())) { "startHour must not be earlier than the current date." }
     }
 
+
     override fun toString(): String {
-        return "Start hour = $startHour"
+
+        return SimpleDateFormat("dd-MM-yyyy HH:mm").format(startHour)
     }
 }
 
@@ -62,6 +66,6 @@ value class EndHour(val endHour: Date) {
         require(!endHour.before(Date())) { "endHour must not be earlier than the current date." }
     }
     override fun toString(): String {
-        return "End hour = $endHour"
+        return SimpleDateFormat("dd-MM-yyyy HH:mm").format(endHour)
     }
 }

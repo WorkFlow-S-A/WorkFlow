@@ -130,7 +130,7 @@ fun ControlTaskEmployeeCompose(navController: NavController) {
                     }
                 }
             }, floatingActionButton = {
-                FloatingActionButton(onClick = { navController.navigate(WorkFlowScreen.ControlAddEmployee.name) }, containerColor = GreenWorkFlow) {
+                FloatingActionButton(onClick = { navController.navigate(WorkFlowScreen.ControlAddTask.name + "/$employeeId") }, containerColor = GreenWorkFlow) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                 }
             }

@@ -1,6 +1,7 @@
 package com.example.workflow.adapters.repositories.firebase
 
 import android.util.Log
+import com.example.workflow.adapters.dtos.EmployeeDTO
 import com.example.workflow.adapters.dtos.TaskDTO
 import com.example.workflow.domain.entities.Task
 import com.example.workflow.ports.repository.TaskRemoteRepository
@@ -31,15 +32,13 @@ class TaskFirebaseRepository: TaskRemoteRepository {
     }
 
     override fun getAllTasksStream(): Flow<List<Task>> = flow{
-        var tasks : List<Task> = emptyList()
-        db.document(CompanyFirebaseRepository.getCurrentCompanyId()).collection("Tasks")
-            .get().addOnSuccessListener {
-                val taskDTOList = it.toObjects(TaskDTO::class.java)
-                tasks = taskDTOList.map { taskDTO ->
-                    TaskDTO.toTask(taskDTO)
-                }
-            }.await()
-        emit(tasks)
+        val querySnapshot = db.document(CompanyFirebaseRepository.getCurrentCompanyId())
+            .collection("Tasks").get().await()
+        val dtoList : List<TaskDTO> = querySnapshot.toObjects(TaskDTO::class.java)
+
+        emit(dtoList.map {
+            TaskDTO.toTask(it)
+        })
     }
 
     override suspend fun saveAll(tasks: List<Task>) {
