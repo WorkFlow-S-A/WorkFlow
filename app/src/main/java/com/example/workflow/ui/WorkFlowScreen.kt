@@ -97,7 +97,7 @@ fun WorkFlowApp(){
             arguments = listOf(
                 navArgument("employeeId"){type = NavType.StringType})
         ){
-            ControlProfileCompose(navController = navController)
+            ControlTaskEmployeeCompose(navController = navController)
         }
 
         composable(route = WorkFlowScreen.ControlCreateTask.name){

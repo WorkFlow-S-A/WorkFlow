@@ -124,7 +124,7 @@ fun EmployeeRow(employee : Employee, navController: NavController){
             Text(employee.name.name, color = Color.White)
         }
 
-        IconButton(onClick = { navController.navigate("controlEmployeesProfile"+"/" + employee.id) }){
+        IconButton(onClick = { navController.navigate("controlEmployeesProfile/${employee.id}") }){
             Icon(tint = Color.White, imageVector = Icons.Default.ArrowForwardIos, contentDescription = "Editar empleado")
         }
 

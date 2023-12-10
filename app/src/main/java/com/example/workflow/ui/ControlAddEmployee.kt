@@ -45,6 +45,7 @@ import com.example.workflow.ui.theme.WorkFlowTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.Exception
 
 @Composable
 fun AddEmployeeCompose(navController: NavController) {
@@ -114,14 +115,20 @@ fun AddEmployeeCompose(navController: NavController) {
                                 onEmailValueChange = { email = it })
                             FilledButton(onClick = {
                                 coroutineScope.launch(Dispatchers.IO){
-                                    val employee = Employee(
-                                        name = EmployeeName(userName),
-                                        surname = EmployeeSurname(userSurname),
-                                        employeeId = EmployeeID(userDNI),
-                                        email = Email(email),
-                                        workHours = EmployeeWorkHours(0)
-                                    )
-                                    CompanyFirebaseRepository.addEmployeeToCompany(employee)
+                                    try {
+                                        val employee = Employee(
+                                            name = EmployeeName(userName),
+                                            surname = EmployeeSurname(userSurname),
+                                            employeeId = EmployeeID(userDNI),
+                                            email = Email(email),
+                                            workHours = EmployeeWorkHours(0)
+                                        )
+                                        CompanyFirebaseRepository.addEmployeeToCompany(employee)
+                                    }catch (e :Exception){
+
+                                    }
+
+
 
                                     withContext(Dispatchers.Main){
                                         navController.navigate("controlEmployees")

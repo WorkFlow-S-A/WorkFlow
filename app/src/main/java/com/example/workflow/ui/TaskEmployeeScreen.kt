@@ -262,7 +262,7 @@ fun Content(data: CalendarUiModel, onDateClickListener: (CalendarUiModel.Date) -
             //LLAMAR A LA BASE DE DATOS Y OBTENER LAS TAREAS DE ESE DIA PARA MOSTRARLO AQUI
             items(items = data.visibleDates) {
                 TaskRow(task = Task(id = UUID.randomUUID(), TaskName("juan"),
-                    TaskDescription("asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf"), StartHour(startHour = Date(System.currentTimeMillis()+10000)),EndHour(endHour = Date(System.currentTimeMillis()+10000)),done = true)
+                    TaskDescription("fasdfasdf"), StartHour(startHour = Date(System.currentTimeMillis()+10000)),EndHour(endHour = Date(System.currentTimeMillis()+10000)),done = true)
                 )
             }
         }

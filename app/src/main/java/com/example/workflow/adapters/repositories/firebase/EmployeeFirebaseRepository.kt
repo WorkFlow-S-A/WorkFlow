@@ -29,6 +29,7 @@ class EmployeeFirebaseRepository : EmployeeRemoteRepository{
 
     }
 
+
     override suspend fun getAllEmployeesStream(): Flow<List<Employee>> = flow {
         val querySnapshot = db.document(CompanyFirebaseRepository.getCurrentCompanyId())
             .collection("Employees").get().await()

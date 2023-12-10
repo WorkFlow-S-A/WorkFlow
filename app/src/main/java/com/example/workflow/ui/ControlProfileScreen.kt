@@ -16,11 +16,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,11 +39,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.workflow.App
 import com.example.workflow.R
+import com.example.workflow.adapters.repositories.firebase.CompanyFirebaseRepository
 import com.example.workflow.ui.customCompose.FilledButton
 import com.example.workflow.ui.customCompose.TextFieldCustom
 import com.example.workflow.ui.customCompose.TopBarControl
 import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -49,14 +53,16 @@ fun ControlProfileCompose(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val arguments = navBackStackEntry?.arguments
     val employeeId = arguments?.getString("employeeId")
+    val coroutineScope = rememberCoroutineScope()
 
-    Log.d("EMPLOYEE ID", employeeId ?: "null")
+
 
     var email by remember { mutableStateOf("jpereiro1@gmail.com") }
     var name by remember { mutableStateOf("User name") }
     var uid by remember { mutableStateOf("12345678X") }
     var workHours by remember { mutableIntStateOf(35) }
     var workedHours by remember { mutableIntStateOf(35) }
+
     if(employeeId != null){
         LaunchedEffect(Unit) {
             val employee = App.instance.employeeService.getEmployee(employeeId)
@@ -65,6 +71,7 @@ fun ControlProfileCompose(navController: NavController) {
             uid = employee.employeeId.id
             workHours = employee.workHours.workHours
             workedHours = employee.workedHours.workedHours
+
         }
     }
 
@@ -152,7 +159,7 @@ fun ControlProfileCompose(navController: NavController) {
 
                         Column {
                             FilledButton(
-                                onClick = { /*TODO*/ },
+                                onClick = { navController.navigate("controlTaskEmployee/$employeeId") },
                                 text = "Tareas",
                                 modifier = Modifier
                                     .padding(10.dp)
@@ -161,7 +168,15 @@ fun ControlProfileCompose(navController: NavController) {
                                 Color.Black
                             )
                             FilledButton(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    coroutineScope.launch {
+                                        if(employeeId != null)
+                                            CompanyFirebaseRepository.deleteEmployeeFromCompany(employeeId)
+                                        navController.popBackStack()
+                                    }
+
+
+                                          },
                                 text = "Eliminar empleado",
                                 modifier = Modifier
                                     .padding(10.dp)
