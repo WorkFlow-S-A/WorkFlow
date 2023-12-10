@@ -127,9 +127,6 @@ fun AddEmployeeCompose(navController: NavController) {
                                     }catch (e :Exception){
 
                                     }
-
-
-
                                     withContext(Dispatchers.Main){
                                         navController.navigate("controlEmployees")
                                     }

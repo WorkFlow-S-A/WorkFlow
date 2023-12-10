@@ -23,9 +23,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
@@ -41,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.workflow.App
 import com.example.workflow.R
 import com.example.workflow.ui.customCompose.BottomBar
 import com.example.workflow.ui.customCompose.EmailTextField
@@ -54,6 +58,28 @@ import com.example.workflow.ui.theme.WorkFlowTheme
 @Composable
 fun ProfileCompose(navController: NavController) {
 
+    val employeeId = App.instance.currentEmployeeUid
+    val coroutineScope = rememberCoroutineScope()
+
+
+
+    var email by remember { mutableStateOf("jpereiro1@gmail.com") }
+    var name by remember { mutableStateOf("User name") }
+    var uid by remember { mutableStateOf("12345678X") }
+    var workHours by remember { mutableIntStateOf(35) }
+    var workedHours by remember { mutableIntStateOf(35) }
+
+    if(employeeId != null){
+        LaunchedEffect(Unit) {
+            val employee = App.instance.employeeService.getEmployee(employeeId)
+            email = employee.email.email
+            name = employee.name.name
+            uid = employee.employeeId.id
+            workHours = employee.workHours.workHours
+            workedHours = employee.workedHours.workedHours
+
+        }
+    }
 
     WorkFlowTheme {
         Scaffold(
@@ -78,7 +104,7 @@ fun ProfileCompose(navController: NavController) {
                             contentDescription = null
                         )
 
-                        Text("User Name",
+                        Text(name,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -93,8 +119,8 @@ fun ProfileCompose(navController: NavController) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
                         Column(){
-                            TextFieldCustom("Email","jpereiro1@gmail.com")
-                            TextFieldCustom("DNI","12345678X")
+                            TextFieldCustom("Email",email)
+                            TextFieldCustom("DNI",uid)
                             TextFieldCustom("Teléfono","+34 612 612 612")
                         }
 
@@ -110,7 +136,7 @@ fun ProfileCompose(navController: NavController) {
                                     Center
                                 ){
                                     //Poner las horas
-                                    Text("35h",modifier = Modifier
+                                    Text("$workHours h",modifier = Modifier
                                         .clip(RoundedCornerShape(10.dp))
                                         .padding(15.dp))
                                 }
@@ -125,7 +151,8 @@ fun ProfileCompose(navController: NavController) {
                                     Center
                                     ){
                                     //Poner las horas
-                                    Text("35h",modifier = Modifier.padding(15.dp)
+                                    Text("$workedHours h",modifier = Modifier
+                                        .padding(15.dp)
                                         .clip(RoundedCornerShape(50)))
                                 }
                             }
