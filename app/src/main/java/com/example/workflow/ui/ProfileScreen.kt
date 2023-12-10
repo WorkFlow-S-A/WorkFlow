@@ -119,15 +119,16 @@ fun ProfileCompose(navController: NavController) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
                         Column(){
-                            TextFieldCustom("Email",email)
-                            TextFieldCustom("DNI",uid)
-                            TextFieldCustom("Teléfono","+34 612 612 612")
+                            TextFieldCustom("Email","jpereiro1@gmail.com")
+                            TextFieldCustom("DNI","12345678X")
                         }
 
 
-                        Row(horizontalArrangement = Arrangement.SpaceAround, modifier= Modifier.fillMaxWidth()){
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier= Modifier.fillMaxWidth().padding(0.dp,15.dp,0.dp,0.dp)){
 
-                            Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+                            Row(horizontalArrangement = Arrangement.SpaceAround,
+                                modifier = Modifier.fillMaxWidth().padding(20.dp),
+                                verticalAlignment = Alignment.CenterVertically){
                                 Text("Horas estimadas")
                                 Box(
                                     modifier = Modifier
@@ -142,7 +143,10 @@ fun ProfileCompose(navController: NavController) {
                                 }
                             }
 
-                            Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceAround,
+                                modifier = Modifier.fillMaxWidth().padding(20.dp),
+                                verticalAlignment = Alignment.CenterVertically){
                                 Text("Horas realizadas")
                                 Box(
                                     modifier = Modifier

@@ -98,6 +98,14 @@ class CompanyFirebaseRepository {
             return isAdmin
         }
 
+        suspend fun updateQr(number : String){
+
+            db.document(currentCompanyId).set(mapOf(
+                "currentQrCode" to number,
+                "companyName" to getCurrentCompanyName()
+            ))
+        }
+
     }
 
 
