@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.flow
 class EmployeeFirebaseRepository : EmployeeRemoteRepository{
     private val db = FirebaseFirestore.getInstance().collection("Company")
 
+
     override suspend fun insertEmployee(employee: Employee) {
 
         db.document(CompanyFirebaseRepository.getCurrentCompanyId()).collection("Employees")

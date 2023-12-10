@@ -1,6 +1,10 @@
 package com.example.workflow.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,12 +37,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.workflow.App
+import com.example.workflow.adapters.utils.QrGenerator
 import com.example.workflow.domain.entities.Employee
 import com.example.workflow.ui.customCompose.FilledButton
 import com.example.workflow.ui.customCompose.TopBarControl
@@ -53,6 +59,14 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ControlEmployeesCompose(navController: NavController){
+    val coroutineScope = rememberCoroutineScope()
+
+    // Crear un launcher para abrir el navegador web
+    val openUrlLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        // Puedes manejar el resultado si es necesario
+    }
     var employees by remember { mutableStateOf(emptyList<Employee>()) }
     LaunchedEffect(Unit) {
         try {
@@ -81,7 +95,13 @@ fun ControlEmployeesCompose(navController: NavController){
                             style = MaterialTheme.typography.headlineMedium )
 
                         FilledButton(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                coroutineScope.launch {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(QrGenerator.getQr()))
+                                    // Iniciar la actividad del navegador web utilizando el launcher
+                                    openUrlLauncher.launch(intent)
+                                }
+                            },
                             text = "QR",
                             modifier = Modifier,
                             containerColor = GreenWorkFlow,
