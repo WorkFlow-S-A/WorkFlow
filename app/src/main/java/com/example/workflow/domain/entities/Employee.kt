@@ -156,8 +156,14 @@ value class Phone(val phone : String){
 class TaskComparator : Comparator<Task>{
 
 
-    override fun compare(o1: Task?, o2: Task?): Int {
-        TODO("Compare of tasks")
+    override fun compare(o1: Task, o2: Task): Int {
+        if(o1.startHour.startHour.after(o2.startHour.startHour)){
+            return 1
+        }else if(o1.startHour.startHour.before(o2.startHour.startHour)){
+            return -1
+        }else{
+            return 0
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.workflow.adapters.repositories.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.workflow.adapters.dtos.TaskDTO
 import com.example.workflow.domain.entities.AttendanceRecord
 import com.example.workflow.domain.entities.Task
 import com.google.gson.Gson
@@ -33,8 +34,12 @@ data class RoomEmployee(
 
         fun convertJsonToSchedule(scheduleJson: String): TreeSet<Task> {
             val gson = Gson()
-            val type: Type = object: TypeToken<TreeSet<Task>>() {}.type
-            return gson.fromJson(scheduleJson, type)
+            val type: Type = object: TypeToken<TreeSet<TaskDTO>>() {}.type
+            val tasks : TreeSet<Task> = TreeSet<Task>()
+            gson.fromJson<TreeSet<TaskDTO>?>(scheduleJson, type).forEach{
+                tasks.add(TaskDTO.toTask(it))
+            }
+            return tasks
         }
 
         fun convertAttendanceHistoryToJson(attendanceHistory: MutableList<AttendanceRecord>): String {

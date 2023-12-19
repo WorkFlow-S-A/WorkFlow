@@ -19,7 +19,7 @@ class EmployeeDTO private constructor() {
     lateinit var employeeId: String
     lateinit var name: String
     lateinit var surname: String
-    lateinit var schedule: List<Task>
+    lateinit var schedule: List<TaskDTO>
     var workHours: Int = 0
     var workedHours: Int = 0
     lateinit var email : String
@@ -38,7 +38,7 @@ class EmployeeDTO private constructor() {
                 attendanceHistory = employeeDTO.attendanceHistory.toMutableList()
             )
 
-            employee.schedule.schedule.addAll(employeeDTO.schedule)
+            employee.schedule.schedule.addAll(employeeDTO.schedule.map { TaskDTO.toTask(it) })
             return employee
         }
 
@@ -48,7 +48,7 @@ class EmployeeDTO private constructor() {
             employeeDTO.name = employee.name.name
             employeeDTO.surname = employee.surname.surname
             employeeDTO.employeeId = employee.employeeId.id
-            employeeDTO.schedule = employee.schedule.schedule.toList()
+            employeeDTO.schedule = employee.schedule.schedule.toList().map { TaskDTO.fromTask(it) }
             employeeDTO.workHours = employee.workHours.workHours
             employeeDTO.workedHours = employee.workedHours.workedHours
             employeeDTO.email = employee.email.email

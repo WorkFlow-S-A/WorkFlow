@@ -27,4 +27,7 @@ interface EmployeeRoomDao {
 
     @Query("SELECT * FROM employees WHERE needSync = 1")
     fun getAllDesynchronizedEmployees(): List<RoomEmployee>
+
+    @Query("DELETE FROM employees")
+    suspend fun deleteAll()
 }

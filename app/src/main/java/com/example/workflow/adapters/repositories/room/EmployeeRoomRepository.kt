@@ -37,10 +37,14 @@ class EmployeeRoomRepository(private val employeeDao: EmployeeRoomDao): Employee
     }
 
     override suspend fun saveAll(employees: List<Employee>) {
+        deleteAll()
         val roomEmployees = employees.map { it.toEmployeeRoomEntity(false) }
         employeeDao.insertAll(roomEmployees)
     }
 
+    private suspend fun deleteAll() {
+        employeeDao.deleteAll()
+    }
     override suspend fun getDesynchronizedEmployees(): List<Employee> {
         val roomDesynchronizedEmployees = employeeDao.getAllDesynchronizedEmployees()
         return roomDesynchronizedEmployees.map { it.toEmployee() }

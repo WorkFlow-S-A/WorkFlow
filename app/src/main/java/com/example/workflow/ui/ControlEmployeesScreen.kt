@@ -69,11 +69,9 @@ fun ControlEmployeesCompose(navController: NavController){
     }
     var employees by remember { mutableStateOf(emptyList<Employee>()) }
     LaunchedEffect(Unit) {
-        try {
+
             employees = App.instance.employeeService.getAllEmployees()
-        } catch (e: Exception) {
-            Log.e("Error al obtener empleados", e.toString())
-        }
+
 
     }
 

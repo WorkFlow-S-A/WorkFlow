@@ -19,7 +19,7 @@ abstract class LocalDatabase : RoomDatabase() {
                 Room.databaseBuilder(
                     context,
                     LocalDatabase::class.java,
-                    "local-database"
+                    "local-database-2"
                 ).build()
                 .also { instance = it }
             }

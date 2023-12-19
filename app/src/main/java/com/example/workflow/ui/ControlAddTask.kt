@@ -94,9 +94,9 @@ fun ControlAddTaskCompose(navController: NavController){
 
                     ){
 
-                        items(items = tasks){ task->
+                        items(tasks.size){ index->
 
-                            TaskRow1(employeeId!!, task)
+                            TaskRow1(employeeId!!, tasks[index])
                         }
 
                     }

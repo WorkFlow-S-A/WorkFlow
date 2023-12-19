@@ -35,11 +35,16 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.workflow.App
 import com.example.workflow.adapters.repositories.firebase.CompanyFirebaseRepository
+import com.example.workflow.domain.entities.Task
 import com.example.workflow.ui.customCompose.CustomClickableText
 import com.example.workflow.ui.theme.GreenWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -53,13 +58,14 @@ fun ControlTaskEmployeeCompose(navController: NavController) {
     val employeeId = arguments?.getString("employeeId")
     var companyName by remember{ mutableStateOf("Company") }
     val coroutineScope = rememberCoroutineScope()
-
+    var tasks by remember { mutableStateOf(emptyList<Task>()) }
 
     var email by remember { mutableStateOf("jpereiro1@gmail.com") }
     var name by remember { mutableStateOf("User name") }
     var uid by remember { mutableStateOf("12345678X") }
     var workHours by remember { mutableIntStateOf(35) }
     var workedHours by remember { mutableIntStateOf(35) }
+
 
     if(employeeId != null){
         LaunchedEffect(Unit) {
@@ -70,6 +76,7 @@ fun ControlTaskEmployeeCompose(navController: NavController) {
             workHours = employee.workHours.workHours
             workedHours = employee.workedHours.workedHours
             companyName = CompanyFirebaseRepository.getCurrentCompanyName()
+            tasks = employee.schedule.schedule.toList()
 
         }
     }
@@ -134,12 +141,18 @@ fun ControlTaskEmployeeCompose(navController: NavController) {
 
                             coroutineScope.launch(Dispatchers.IO) {
                                 try {
-                                    val tasks = App.instance.taskService.getAllTasks()
+
                                     items(items = tasks) { task ->
-                                        /*TaskRow(task = Task(id = UUID.randomUUID(), TaskName("juan"),
-                                            TaskDescription("fasdfasdf"), StartHour(startHour = Date(System.currentTimeMillis()+10000)),EndHour(endHour = Date(System.currentTimeMillis()+10000)),done = true)
-                                        )*/
-                                        TaskRow(task)
+                                        val date = task.startHour.startHour.toInstant().atZone(
+                                            ZoneId.systemDefault()).toLocalDate();
+
+                                        if(
+                                            date.year == calendarUiModel.selectedDate.date.year &&
+                                            date.month == calendarUiModel.selectedDate.date.month &&
+                                            date.dayOfMonth == calendarUiModel.selectedDate.date.dayOfMonth
+                                        ){
+                                            TaskRow(task)
+                                        }
                                     }
                                 } catch (e: Exception) {
 

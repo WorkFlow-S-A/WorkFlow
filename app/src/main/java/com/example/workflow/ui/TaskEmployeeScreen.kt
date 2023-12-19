@@ -2,12 +2,9 @@ package com.example.workflow.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
@@ -40,41 +36,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.workflow.App
-import com.example.workflow.adapters.repositories.firebase.CompanyFirebaseRepository
-import com.example.workflow.domain.entities.Email
-import com.example.workflow.domain.entities.Employee
-import com.example.workflow.domain.entities.EmployeeID
-import com.example.workflow.domain.entities.EmployeeName
-import com.example.workflow.domain.entities.EmployeeSurname
-import com.example.workflow.domain.entities.EmployeeWorkHours
-import com.example.workflow.domain.entities.EndHour
-import com.example.workflow.domain.entities.StartHour
 import com.example.workflow.domain.entities.Task
-import com.example.workflow.domain.entities.TaskDescription
-import com.example.workflow.domain.entities.TaskName
 import com.example.workflow.ui.customCompose.BottomBar
 import com.example.workflow.ui.customCompose.TopBar
 import com.example.workflow.ui.theme.BlueWorkFlow
 import com.example.workflow.ui.theme.WorkFlowTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.time.temporal.ChronoUnit
 import java.util.Date
-import java.util.UUID
 import java.util.stream.Collectors
 import java.util.stream.Stream
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.LaunchedEffect
+import com.example.workflow.App
+import com.example.workflow.adapters.repositories.firebase.CompanyFirebaseRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -264,8 +249,15 @@ fun TaskEmployeeComposePreview() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Content(data: CalendarUiModel, onDateClickListener: (CalendarUiModel.Date) -> Unit) {
-
+    var tasks by remember { mutableStateOf(emptyList<Task>()) }
     val coroutineScope = rememberCoroutineScope()
+    if(App.instance.currentEmployeeUid != null){
+        LaunchedEffect(Unit) {
+            val employee = App.instance.employeeService.getEmployee(App.instance.currentEmployeeUid!!)
+            tasks = employee.schedule.schedule.toList()
+
+        }
+    }
 
     Column {
 
@@ -279,12 +271,18 @@ fun Content(data: CalendarUiModel, onDateClickListener: (CalendarUiModel.Date) -
             //LLAMAR A LA BASE DE DATOS Y OBTENER LAS TAREAS DE ESE DIA PARA MOSTRARLO AQUI
             coroutineScope.launch(Dispatchers.IO) {
                 try {
-                    val tasks = App.instance.taskService.getAllTasks()
+
                     items(items = tasks) { task ->
-                        /*TaskRow(task = Task(id = UUID.randomUUID(), TaskName("juan"),
-                            TaskDescription("fasdfasdf"), StartHour(startHour = Date(System.currentTimeMillis()+10000)),EndHour(endHour = Date(System.currentTimeMillis()+10000)),done = true)
-                        )*/
-                        TaskRow(task)
+                        val date = task.startHour.startHour.toInstant().atZone(
+                            ZoneId.systemDefault()).toLocalDate();
+
+                        if(
+                            date.year == data.selectedDate.date.year &&
+                            date.month == data.selectedDate.date.month &&
+                            date.dayOfMonth == data.selectedDate.date.dayOfMonth
+                        ){
+                            TaskRow(task)
+                        }
                     }
                 } catch (e: Exception) {
 
